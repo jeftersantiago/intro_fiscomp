@@ -8,8 +8,6 @@ c     definidas por u, v e w - v.
 
       write(*,*) "Vetor u:"
       read(*,*) u(1), u(2), u(3)
-      
-
 
       end
       
