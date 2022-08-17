@@ -1,0 +1,24 @@
+#+title: *\Huge{Projeto 01}*
+#+subtitle: \huge{Introdução ao Fortran}
+#+author: *\Lage{Jefter Santiago Mares}* @@latex:\\@@ n$^{\circ}$ USP:12559016
+#+options: toc:2  date:t
+#+language: pt
+
+#+latex_header: \documentclass[a4paper]{report}
+#+latex_header: \usepackage[backend=bibtex,bibencoding=ascii,style=chem-angew,citestyle=numeric-comp,sorting=none]{biblatex}
+#+latex_header: \addbibresource{~/Projects/unibib/References/lab-lib.bib}
+
+#+begin_latex 
+\begin{figure}[t!]
+    \includegraphics[height=0.2\textwidth]{~/Workspace/intro_fiscomp/.template/ifsc-logo.jpg}
+\end{figure}
+#+end_latex
+
+#+latex: \thispagestyle{empty}
+#+latex: \vspace*{\fill}
+#+latex: \begin{center}
+São Carlos
+
+2021
+#+latex: \end{center}
+#+latex:\newpage

@@ -1,0 +1,3 @@
+#+setupfile: ~/Dropbox/Templates/latex-org/org_header.org
+#+include: ./header.org
+
