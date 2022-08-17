@@ -7,6 +7,6 @@ c     Calcula área e volume de um tórus a partir de raios dados.
       aArea = 4.e0 * pi ** 2 * re * ri 
       aVolume = 2.e0 * pi ** 3 * re * ri
 
-      write(*,*) "Area ~= ", aArea
-      write(*,*) "Volume ~= ", aVolume
+      write(*,*) "Area = ", aArea
+      write(*,*) "Volume = ", aVolume
       end
