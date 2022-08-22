@@ -1,5 +1,6 @@
 c     Tarefa 01
 c     Calcula área e volume de um tórus a partir de raios dados.
+
       write(*,*) "Digite os valores dos raios (interno, externo):"
       read(*,*) ri, re
       pi = acos(-1e0)
@@ -9,4 +10,5 @@ c     Calcula área e volume de um tórus a partir de raios dados.
 
       write(*,*) "Area = ", aArea
       write(*,*) "Volume = ", aVolume
+
       end

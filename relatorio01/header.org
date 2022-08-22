@@ -1,7 +1,7 @@
 #+title: *\Huge{Projeto 01}*
 #+subtitle: \huge{Introdução ao Fortran}
 #+author: *\Lage{Jefter Santiago Mares}* @@latex:\\@@ n$^{\circ}$ USP:12559016
-#+options: toc:2  date:t
+#+options: toc:1  date:t
 #+language: pt
 
 #+latex_header: \documentclass[a4paper]{report}
