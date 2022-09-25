@@ -1,12 +1,15 @@
 #+title: *\Huge{Projeto 01}*
 #+subtitle: \huge{Introdução ao Fortran}
 #+author: *\Lage{Jefter Santiago Mares}* @@latex:\\@@ n$^{\circ}$ USP:12559016
-#+options: toc:1  date:t
+#+options: num:1 toc:1  date:t
 #+language: pt
+#+date: 17 de setembro de 2022
 
 #+latex_header: \documentclass[a4paper]{report}
 #+latex_header: \usepackage[backend=bibtex,bibencoding=ascii,style=chem-angew,citestyle=numeric-comp,sorting=none]{biblatex}
 #+latex_header: \addbibresource{~/Projects/unibib/References/lab-lib.bib}
+#+latex_header:\usepackage{amsmath} % or simply amstext
+
 
 #+begin_latex 
 \begin{figure}[t!]
@@ -22,3 +25,5 @@ São Carlos
 2021
 #+latex: \end{center}
 #+latex:\newpage
+
+#+setupfile: ../.template/template.org

@@ -6,3 +6,7 @@
 *fort.20*
 *.out
 *ltximg
+*aux
+*log
+*inc.eps
+*eps-converted-to*
