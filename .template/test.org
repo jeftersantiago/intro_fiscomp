@@ -1,0 +1,10 @@
+#+latex_header: \definecolor{dark}{HTML}{f0f2f2}
+
+#+latex_header: \setminted[fortran]{linenos=false, bgcolor=dark, breaklines=true,encoding=utf8,fontsize=\scriptsize}
+#+latex_header: \usemintedstyle[fortran]{perldoc}
+
+#+latex_header: \setminted[shell]{linenos=false, breaklines=true, fontsize=\tiny, frame=lines}
+#+latex_header: \usemintedstyle[shell]{bw}
+
+#+latex_header: \usepackage{fontspec}
+#+latex_header: \setmonofont{Roboto Mono}

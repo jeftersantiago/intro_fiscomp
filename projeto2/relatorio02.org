@@ -1,0 +1,83 @@
+#+include: ./header.org
+#+startup: latexpreview
+
+* *(A)* Momentos de distribuição
+ Seja \( f(x) = x^n \) uma função \( f: \mathbb{R} \mapsto \mathbb{R} \), a média dessa função pode ser 
+ definida por
+ \[  \left \langle  f \right \rangle = \frac{1}{b - a} \int_{a}^{b} f(x) dx = \frac{1}{b - a} \cdot  \frac{x^{n + 1}}{n + 1} \biggr\vert_a^{b} \]
+ estamos interessados no intervalo \( [0, 1]\), portanto a média deve ser
+ \[ \left \langle f \right \rangle = \frac{1}{1 - 0} \cdot   \frac{x^{n + 1}}{n + 1} \biggr\vert_{0}^{1} = \frac{1}{n + 1}\]
+ #+begin_latex
+ \begin{equation}
+ \label{eq:media1}
+ \left \langle f \right \rangle  = \frac{1}{n + 1}
+ \end{equation}
+ #+end_latex
+
+ Portanto, para cada caso \( n = 1, 2, 3 \text{ e } 4 \) temos
+ #+name: tbl1
+ #+caption: Valores esperados para o cálculo de \( f(x) \) para cada \( n \) .
+ #+attr_latex: :align |c|c| :placement [h!] :center t 
+ |---------+---------------------------|
+ | \( n \) | \( \left \langle f \right \rangle  \) |
+ |---------+---------------------------|
+ | $1$     | \( 1/2 \)                 |
+ | $2$     | \(  1/3\)                 |
+ | $3$     | \(1/4\)                   |
+ | $4$     | \(1/5\)                   |
+ |---------+---------------------------|
+** Código e resultados
+ O código abaixo executa o cálculo dessa média para qualquer \( N \).
+ #+begin_src fortran :exports code
+   C     Tarefa1: Cálcular a média de um número para um N
+         read(*, *) N
+         sum1 = 0.0e0
+         sum2 = 0.0e0
+         sum3 = 0.0e0
+         sum4 = 0.0e0
+
+         x = rand(iseed)
+         do i = 1, N
+            x = rand()
+            sum1 = sum1 + x
+            sum2 = sum2 + x**2
+            sum3 = sum3 + x**3
+            sum4 = sum4 + x**4
+         end do
+
+         sum1 = sum1 / N
+         sum2 = sum2 / N
+         sum3 = sum3 / N
+         sum4 = sum4 / N
+
+         write(*, *) "<x¹> = ", sum1
+         write(*, *) "<x²> = ", sum2
+         write(*, *) "<x³> = ", sum3
+         write(*, *) "<x⁴> = ", sum4
+         end
+#+end_src
+: jefter66@muaddib~/Workspace/intro_fiscomp/projeto2/tarefa1$ ./tarefa1.exe
+: 100
+:  <x¹> =   0.523797512
+:  <x²> =   0.357666671
+:  <x³> =   0.271176100
+:  <x⁴> =   0.218358591
+: jefter66@muaddib~/Workspace/intro_fiscomp/projeto2/tarefa1$ ./tarefa1.exe
+: 100000
+:  <x¹> =   0.500286758
+:  <x²> =   0.333478957
+:  <x³> =   0.249980465
+:  <x⁴> =   0.199869826
+: jefter66@muaddib~/Workspace/intro_fiscomp/projeto2/tarefa1$ ./tarefa1.exe
+: 1000000
+:  <x¹> =   0.500028610
+:  <x²> =   0.333151519
+:  <x³> =   0.249754101
+:  <x⁴> =   0.199709803
+ Esses resultados estão dentro do esperado, já que são valores muito próximo das frações listadas
+ na tabela ([[tbl1]]). Note que para \( N \) cada vez maior, melhor a aproximação.
+* *(B)* Andarilhos aleatório em uma dimensão
+** *(B.1)* Muitos andarilhos 
+** *(B.2)* Muitos andarilhos com \( p = \frac{1}{3}, \frac{1}{4}, \frac{1}{4}\)
+* *(C)* Andarilho aleatório em 2 dimensões
+* *(D)* Cálculo da entropia 
