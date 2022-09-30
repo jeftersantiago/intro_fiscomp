@@ -36,7 +36,6 @@
         write(*, *) detXj / detA
 
       end do
-
       close(10)
       close(20)
       end
