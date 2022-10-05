@@ -385,7 +385,7 @@ Teremos então, para o cálculo da série, o código abaixo:
      | 3 2 1   |         -1 |
      |---------+------------|
 ** Solução
-   Para o caso de \( n + 1 \) , com \( n = 3 \) temos \( 24 \) permutações, podemos escrever como \( 4
+Para o caso de \( n + 1 \) , com \( n = 3 \) temos \( 24 \) permutações, podemos escrever como \( 4
 \cdot  3!  \), ou seja,
    4 conjuntos de permutações a partir das permutações de 3. Então podemos escrever esses conjuntos
    levando em conta que o 4 vai ocupar uma posição diferente em cada grupo:

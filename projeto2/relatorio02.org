@@ -1,0 +1,273 @@
+#+include: ./header.org
+#+startup: latexpreview
+
+* *(A)* Momentos de distribuição
+ Seja \( f(x) = x^n \) uma função \( f: \mathbb{R} \mapsto \mathbb{R} \), a média dessa função pode ser 
+ definida por
+ \[  \left \langle  f \right \rangle = \frac{1}{b - a} \int_{a}^{b} f(x) dx = \frac{1}{b - a} \cdot  \frac{x^{n + 1}}{n + 1} \biggr\vert_a^{b} \]
+ estamos interessados no intervalo \( [0, 1]\), portanto a média deve ser
+ \[ \left \langle f \right \rangle = \frac{1}{1 - 0} \cdot   \frac{x^{n + 1}}{n + 1} \biggr\vert_{0}^{1} = \frac{1}{n + 1}\]
+ #+begin_latex
+ \begin{equation}
+ \label{eq:media1}
+ \left \langle f \right \rangle  = \frac{1}{n + 1}
+ \end{equation}
+ #+end_latex
+
+ Portanto, para cada caso \( n = 1, 2, 3 \text{ e } 4 \) temos
+ #+name: tbl1
+ #+caption: Valores esperados para o cálculo de \( f(x) \) para cada \( n \) .
+ #+attr_latex: :align |c|c| :placement [h!] :center t 
+ |---------+---------------------------|
+ | \( n \) | \( \left \langle f \right \rangle  \) |
+ |---------+---------------------------|
+ | $1$     | \( 1/2 \)                 |
+ | $2$     | \(  1/3\)                 |
+ | $3$     | \(1/4\)                   |
+ | $4$     | \(1/5\)                   |
+ |---------+---------------------------|
+** Código e resultados
+ O código abaixo executa o cálculo dessa média para qualquer \( N \).
+ #+begin_src fortran :exports code
+   C     Tarefa1: Cálcular a média de um número para um N
+         read(*, *) N
+         sum1 = 0.0e0
+         sum2 = 0.0e0
+         sum3 = 0.0e0
+         sum4 = 0.0e0
+
+         x = rand(iseed)
+         do i = 1, N
+            x = rand()
+            sum1 = sum1 + x
+            sum2 = sum2 + x**2
+            sum3 = sum3 + x**3
+            sum4 = sum4 + x**4
+         end do
+
+         sum1 = sum1 / N
+         sum2 = sum2 / N
+         sum3 = sum3 / N
+         sum4 = sum4 / N
+
+         write(*, *) "<x1> = ", sum1
+         write(*, *) "<x2> = ", sum2
+         write(*, *) "<x3> = ", sum3
+         write(*, *) "<x4> = ", sum4
+         end
+#+end_src
+ #+attr_latex: :align |c|c|c|c|c| :placement [h!] :center t
+ |------+-------------+-------------+-------------+-------------|
+ |      |   $N = 100$ |       $N=10000$ |      $N = 100000$ |     $N=1000000$ |
+ |------+-------------+-------------+-------------+-------------|
+ | $x$  | 0.523797512 | 0.501901746 | 0.500286758 | 0.500028610 |
+ | $x^2$ | 0.357666671 | 0.335528523 | 0.333478957 | 0.333151519 |
+ | $x^3$ | 0.271176100 | 0.252268225 | 0.249980465 | 0.249754101 |
+ | $x^4$ | 0.218358591 | 0.202313691 | 0.199869826 | 0.199709803 |
+ |------+-------------+-------------+-------------+-------------|
+
+ Esses resultados estão dentro do esperado, já que são valores muito próximo das frações listadas
+ na tabela ([[tbl1]]). Note que para \( N \) cada vez maior, melhor a aproximação.
+* *(B)* Andarilhos aleatório em uma dimensão
+** *(B.1)* Muitos andarilhos com \( p = \frac{1}{2} \) 
+  O programa abaixo cálcula para \( M \) andarilhos a posição final após \( N = 10000 \) passos
+  dados. Então é calculado os valores de \( \left \langle x \right \rangle  \) e \( \left \langle x^2 \right \rangle \) e
+  além disso foi feito um histograma para visualizarmos o resultado final.
+
+  Esse trecho de código é responsável pelo cálculo de \( \left \langle x \right \rangle  \) e  \( \left \langle x^2 \right \rangle  \) .
+  
+  #+begin_src fortran
+    !     Tarefa B - Cálcular <x> e <x2>
+          parameter (n = 1000)
+          parameter (m = 10000)
+
+          parameter (nbin = 30)
+
+          dimension nwalker(m)
+          dimension istep(2)    
+
+          iStep(1) = -1
+          iStep(2) = 1
+      
+          x = 0e0
+          x2 = 0e0
+
+          r = rand(iseed)
+          do i = 1, m
+             nSteps = 0
+             do j = 1, n
+                r = rand() * 2
+    !           i está no intervalo [1, 2]
+                k = int((r + 1) / 2) + 1
+    !           Quantidade de passos dada por andarilho.
+                nSteps = nSteps + iStep(k)
+             end do
+             nWalker(i) = nSteps
+             x = x + nSteps
+             x2 = x2 + nSteps ** 2
+          end do 
+
+          xm = x / m
+          x2m = x2 / m
+
+          print *,"<x> =", xm
+          print *,"<x²> =", x2m
+
+  #+end_src
+  
+  Esse bloco de código cálcula o histograma para os resultados obtidos na parcela anterior
+  O número de bins ou conjuntos do histograma foi escolhido como \( n \sim \sqrt{N} \), onde \( N \) é
+  a quantidade de passos.
+  #+begin_src fortran -n 37
+    !   Constroí o histograma    
+        xmin = nWalker(1) 
+        xmax = xmin
+
+        do i = 2, m
+           if(nWalker(i) < xmin) then
+              xmin = nWalker(i)
+           end if
+           if(nWalker(i) > xmax) then
+              xmax = nWalker(i)
+           end if
+        end do
+
+        dx =  (xmax - xmin) / nbin
+
+        open(unit=10,file='output.dat')
+        do j = 1, nbin
+           nhist = 0
+           infLim = xmin + (j - 1) * dx 
+           supLim = xmin + j * dx
+
+           do i = 1, m
+              if(nWalker(i) >= infLim .and. nWalker(i) < supLim) then
+                nhist = nhist + 1
+              end if
+           end do 
+
+           write(10, *) supLim , nhist
+        end do
+        close(10)
+  #+end_src
+
+  Com base nos resultados escritos no arquivo =output.dat= é criado o histograma abaixo
+  #+caption: Simulação com \( p = 1/2 \).
+  #+attr_latex: :width 10cm :height 10cm :placement [h!]
+  [[./tarefaB/tarefa-b1-grafico-1.pdf]]
+
+  Esses resultados correspondem ao esperado, pois analiticamente, a posição final média pode ser
+  calculada pela relação \( \left \langle x \right \rangle  = N (p - q) \), como \( p + q = 1 \) podemos
+  escrever a equação em termos de \( p \), logo \( q = 1 - p \Rightarrow  (p - q) = p - (1 - p) = 2p - 1  \), então
+  #+begin_latex
+   \begin{equation}
+     \left \langle x  \right \rangle  = N (2p - 1)
+   \label{eq:posicaoMedia}
+   \end{equation}
+  #+end_latex
+  e a deslocamento quadrado médio é dada por \( \left \langle x^2 \right \rangle  = 4 N pq + N^2 - 4N^2 pq \),
+  escrevendo em termos de \( p \) temos
+
+  #+begin_latex
+  \begin{equation}
+   \left \langle x^2 \right \rangle = 4N p(1 - p) + N^2 - 4N^2 p(1 - p)
+  \label{eq:deslocamentoQuadradoMedio}  
+  \end{equation}
+  #+end_latex
+
+  como \( p + q = 1  \)  e \( p = 1/2 \) segue que \( p = q \Rightarrow  p - q = 0 \) 
+  então a posição média esperada para \( p = 1/2 \) é \( \left \langle x \right \rangle  = 0 \). Já o termo
+  \( \left \langle x^2  \right \rangle = 4 \cdot  1000 \cdot  \frac{1}{2} \cdot  \frac{1}{2} + (1000)^2 - 4(1000)^2 \cdot
+  \frac{1}{2} \frac{1}{2} = 1000 \Rightarrow  \left \langle x^2 \right \rangle  = 1000\).
+  
+  Os valores cálculados são \( \left \langle x \right \rangle = -0.00913999975  \) e \( \left \langle x^2 \right \rangle  = 1001.44202 \).
+  
+** *(B.2)* Muitos andarilhos com \( p = \frac{1}{3}, \frac{1}{4}, \frac{1}{5} \) 
+  Foi generalizado o código para \( p = \frac{1}{2} \) em uma dimensão, temos então esse código
+  #+begin_src fortran 
+    !     Tarefa B - Cálcular <x> e <x2>
+          parameter (n = 10000)
+          parameter (m = 10000)
+
+          parameter (nbin = 100)
+
+          dimension nwalker(m)
+
+          dimension istep(2)    
+
+          iStep(1) = -1
+          iStep(2) = 1
+
+          write(*,*) "p = "
+          read(*, *) p 
+
+          x = 0e0
+          x2 = 0e0
+
+          r = rand(iseed)
+          do i = 1, m
+             nSteps = 0
+             do j = 1, n
+                r = rand() * int((1 / p))
+    !           i está no intervalo [1, int(1/p)]
+                k = int((r + 1) / (1 / p)) + 1
+    !        Quantidade de passos dada por andarilho.
+                nSteps = nSteps + iStep(k)
+             end do
+             nWalker(i) = nSteps
+             x = x + nSteps
+             x2 = x2 + nSteps ** 2
+          end do 
+
+          xm = x / m
+          x2m = x2 / m
+
+          print *,"<x> =", xm
+          print *,"<x2> =", x2m
+  #+end_src
+  o código fonte está na pasta =./tarefaB/tarefa-b2.f= e pode ser usado para fazer o cálculo para
+  qualquer valor de =p=. O trecho de código que gera o histograma é o mesmo que para o anterior.
+*** Resultados 
+
+   Podemos estimar os resultados analiticamente por meio das equações (\ref{eq:posicaoMedia}) e 
+   (\ref{eq:deslocamentoQuadradoMedio}), como \( p + q = 1 \Rightarrow  q = 1 - p \), com \( N = 1000
+   \). Foi compilado abaixo os resultados analíticos e estatísticos:
+
+  #+name: tblb2
+  #+caption: Valores de \( \left \langle x \right \rangle  \) calculado pelas simulações e analiticamente com \( N = 1000 \). 
+  #+attr_latex: :align |c|c|c| :placement [h!] :center t 
+  |-----+-------------+---------------------|
+  | p   |   Simulação | Resultado Analitico |
+  |-----+-------------+---------------------|
+  | 1/3 | -333.099609 |           -333.3337 |
+  | 1/4 | -499.925812 |              -500.0 |
+  | 1/5 | -599.990784 |              -600.0 |
+  |-----+-------------+---------------------|
+
+  #+name: tblb22
+  #+caption: Valores de \( \left \langle x^2 \right \rangle\) calculado pelas simulações e de forma analitica, com $N = 1000$.
+  #+attr_latex: :align |c|c|c| :placement [h!] :center t 
+  |-----+------------+---------------------|
+  | p   |  Simulação | Resultado Analitico |
+  |-----+------------+---------------------|
+  | 1/3 | 111835.586 |         111999.9998 |
+  | 1/4 | 250667.750 |            250750.0 |
+  | 1/5 | 360620.500 |            360640.0 |
+  |-----+------------+---------------------|
+
+  Abaixo estão os histogramas para as posições finais com  \( p = \frac{1}{3},
+  \frac{1}{4}, \frac{1}{5}  \) e \( M = 10000 \) andarilhos.
+  
+  #+caption: Simulações para \( p = \frac{1}{3}, \frac{1}{4}, \frac{1}{5} \), com \( N = 10000 \) .
+  #+attr_latex: :width 20cm :height 8cm :placement [h!]
+  [[./tarefaB/tarefa-b2-grafico-2.pdf]]
+
+* *(C)* Andarilho aleatório em 2 dimensões
+
+
+  #+caption: Gráficos de difusão de andarilhos em duas dimensões.
+  #+attr_latex: :width 20cm :height 20cm :placement [h!]
+  [[./tarefaC/tarefa-c-grafico.pdf]]
+
+
+* *(D)* Cálculo da entropia 
