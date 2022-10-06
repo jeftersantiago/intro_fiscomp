@@ -1,6 +1,6 @@
 !     Tarefa B - Cálcular <r> e <Δ2>
-      parameter (n = 100000)
-      parameter (m = 1000)
+      parameter (n = 10)
+      parameter (m = 10000)
 
       dimension walker(m, 2)
       dimension r(m)
@@ -11,6 +11,10 @@
 
       rMean = 0e0
       r2Mean  = 0e0
+
+      rX = 0e0
+      rY = 0e0
+
       rnd = rand(iseed)
       do i = 1, m
          nSteps = 0
@@ -23,17 +27,20 @@
             l = int((l + 1) / 2) + 1
             walker(i, k) = walker(i, k) + iStep(l)
          end do
-         r(i) = sqrt(walker(i,1) ** 2 + walker(i, 2) ** 2)
-         rMean = rMean + r(i)
-         r2Mean = r2Mean + r(i)**2
+         rX = rX + walker(i, 1)
+         rY = rY + walker(i, 2)
+         r2Mean = r2Mean + walker(i, 1) ** 2 + walker(i, 2) ** 2
       end do 
 
-      rMean = rMean / m
+      rX = rX / m
+      rY = rY / m
+      rMean = sqrt(rX**2 + rY**2)
+      print *,"<r> = ", rMean
+
       r2Mean = r2Mean / m
+      print *, "<r²> = ", r2Mean
 
       rDelta = r2Mean - rMean ** 2
-
-      print *,"<r> = ", rMean
       print *,"Δ2 = ", rDelta
 
       open(unit=10,file='saida-tarefa-c.dat')
