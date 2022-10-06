@@ -263,11 +263,85 @@
   [[./tarefaB/tarefa-b2-grafico-2.pdf]]
 
 * *(C)* Andarilho aleatório em 2 dimensões
+  Generalizando o algoritmo para cálculo do andarilhos em uma dimensão para
+  duas, com probabilidades iguais de passos à norte, sul, leste e oeste, ou seja, \( p = \frac{1}{4}
+  \), temos
+  o código abaixo.
+  #+begin_src fortran
+    !     Tarefa B - Cálcular <r> e <delta2>
+        dimension walker(m, 2)
+        dimension r(m)
 
+        rMean = 0e0
+        r2mean = 0e0
+        rnd = rand(iseed)
+        do i = 1, m
+           nSteps = 0
+           walker(i, 1) = 0
+           walker(i, 2) = 0
+           do j = 1, n
+              k = rand() * 2
+              k = int((k + 1) / 2) + 1
+              l = rand() * 2
+              l = int((l + 1) / 2) + 1
+              walker(i, k) = walker(i, k) + iStep(l)
+           end do
+           r(i) = sqrt(walker(i,1) ** 2 + walker(i, 2) ** 2)
+           rMean = rMean + r(i)
+           r2Mean = r2Mean + r(i)**2
+        end do 
 
-  #+caption: Gráficos de difusão de andarilhos em duas dimensões.
+        rMean = rMean / m
+        r2Mean = r2Mean / m
+
+        rDelta = r2Mean - rMean ** 2
+
+        print *,"<r> = ", rMean
+        print *,"delta2 = ", rDelta
+        end
+  #+end_src
+  
+  Foi usado esse código para cálcular \( \left \langle r \right \rangle  \)  e \( \Delta ^2 = \left \langle r^2 \right \rangle -
+  \left \langle r \right \rangle ^2  \) e para gerar o gráfico de difusão com \( N = 10, 10^2,..., 10^6   \) , que foi feito a partir
+  a partir das posições finais armazenadas em um arquivo. Abaixo estão os resultados:
+
+  #+name: tblC
+  #+caption:  
+  #+attr_latex: :align |c|c|c| :placement [h!] :center t 
+  |-----+---------------------------+------------|
+  |   N | \( \left \langle r \right \rangle  \) |   \( \Delta^2  \) |
+  |-----+---------------------------+------------|
+  |  $10$ |                2.84767246 | 2.16676140 |
+  | $10^2$ |                9.12911320 | 21.7112961 |
+  | $10^3$ |                27.7685432 | 209.898010 |
+  | $10^4$ |                91.2768021 | 2464.43652 |
+  | $10^5$ |                2464.43652 | 21683.1875 |
+  | $10^6$ |                886.033081 | 225851.500 |
+  |-----+---------------------------+------------|
+
+  #+caption: Gráficos de difusão de andarilhos em duas dimensões $(X,Y)$.
   #+attr_latex: :width 20cm :height 20cm :placement [h!]
   [[./tarefaC/tarefa-c-grafico.pdf]]
 
+  
+  #+latex: \clearpage
+  Foi feito também algumas alterações no código para duas dimensões
+  com objetivo de visualizar as trajetórias traçadas por cada andarilho para
+  \( N \) grande, assim podemos ter uma relação espacial a cerca da difusão em 2D.
 
+  #+caption: Gráfico da trajetória $(X,Y)$ de 8 andarilhos para \( N = 10000 \) passos.
+  #+attr_latex: :width 15cm :height 15cm :placement [h!]
+  [[./tarefaC/tarefa-c-grafico-trajetoria.pdf]]
+
+  Note que no gráfico há um agrupamento grande próximo da origem e conforme
+  o número de passos aumenta o sistema tende a ficar mais complexo, com vários
+  andarilhos se espalhando de forma aleatória.
+
+  O código usado para gerar o gráfico das trajetórias é o =./tarefaC/tarefa-c-trajetoria.f=.
+
+
+  #+latex: \newpage
 * *(D)* Cálculo da entropia 
+
+\blindtext
+
