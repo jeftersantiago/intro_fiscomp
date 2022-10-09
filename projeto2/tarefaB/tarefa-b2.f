@@ -4,7 +4,7 @@
 !     Quantidade de andarilhos
       parameter (m = 10000)
 
-      parameter (nbin = 30)
+      parameter (nbin = 31)
 
       dimension nwalker(m)
 

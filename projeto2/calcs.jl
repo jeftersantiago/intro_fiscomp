@@ -10,3 +10,7 @@ function x(N, p)
 end
 
 
+# <r>
+function r(N, p)
+    return 4 * N * p * (1 - p)
+end

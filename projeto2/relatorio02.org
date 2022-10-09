@@ -77,42 +77,40 @@
   Esse trecho de código é responsável pelo cálculo de \( \left \langle x \right \rangle  \) e  \( \left \langle x^2 \right \rangle  \) .
   
   #+begin_src fortran
-    !     Tarefa B - Cálcular <x> e <x2>
-          parameter (n = 1000)
-          parameter (m = 10000)
+      parameter (n = 1000)
+      parameter (m = 1000)
 
-          parameter (nbin = 30)
+      parameter (nbin = 31)
 
-          dimension nwalker(m)
-          dimension istep(2)    
+      dimension nwalker(m)
+      dimension istep(2)
 
-          iStep(1) = -1
-          iStep(2) = 1
-      
-          x = 0e0
-          x2 = 0e0
+      iStep(1) = -1
+      iStep(2) = 1
 
-          r = rand(iseed)
-          do i = 1, m
-             nSteps = 0
-             do j = 1, n
-                r = rand() * 2
-    !           i está no intervalo [1, 2]
-                k = int((r + 1) / 2) + 1
-    !           Quantidade de passos dada por andarilho.
-                nSteps = nSteps + iStep(k)
-             end do
-             nWalker(i) = nSteps
-             x = x + nSteps
-             x2 = x2 + nSteps ** 2
-          end do 
+      x = 0e0
+      x2 = 0e0
 
-          xm = x / m
-          x2m = x2 / m
+      r = rand(iseed)
+      do i = 1, m
+         nSteps = 0
+         do j = 1, n
+            r = rand() * 2
+!           i está no intervalo [1, 2]
+            k = int((r + 1) / 2) + 1
+!           Quantidade de passos dada por andarilho.
+            nSteps = nSteps + iStep(k)
+         end do
+         nWalker(i) = nSteps
+         x = x + nSteps
+         x2 = x2 + nSteps ** 2
+      end do
 
-          print *,"<x> =", xm
-          print *,"<x²> =", x2m
+      xm = x / m
+      x2m = x2 / m
 
+      print *,"<x> =", xm
+      print *,"<x²> =", x2m
   #+end_src
   
   Esse bloco de código cálcula o histograma para os resultados obtidos na parcela anterior
@@ -181,7 +179,8 @@
   \frac{1}{2} \frac{1}{2} = 1000 \Rightarrow  \left \langle x^2 \right \rangle  = 1000\).
   
   Os valores cálculados são \( \left \langle x \right \rangle = -0.00913999975  \) e \( \left \langle x^2 \right \rangle  = 1001.44202 \).
-  
+
+  #+latex: \clearpage
 ** *(B.2)* Muitos andarilhos com \( p = \frac{1}{3}, \frac{1}{4}, \frac{1}{5} \) 
   Foi generalizado o código para \( p = \frac{1}{2} \) em uma dimensão, temos então esse código
   #+begin_src fortran 
@@ -258,27 +257,44 @@
   Abaixo estão os histogramas para as posições finais com  \( p = \frac{1}{3},
   \frac{1}{4}, \frac{1}{5}  \) e \( M = 10000 \) andarilhos.
   
-  #+caption: Simulações para \( p = \frac{1}{3}, \frac{1}{4}, \frac{1}{5} \), com \( N = 10000 \) .
+  #+caption: Simulações para \( p = \frac{1}{3}, \frac{1}{4}, \frac{1}{5} \), com \( N = 1000 \) .
   #+attr_latex: :width 20cm :height 8cm :placement [h!]
   [[./tarefaB/tarefa-b2-grafico-2.pdf]]
 
+#+latex: \clearpage  
 * *(C)* Andarilho aleatório em 2 dimensões
   Generalizando o algoritmo para cálculo do andarilhos em uma dimensão para
   duas, com probabilidades iguais de passos à norte, sul, leste e oeste, ou seja, \( p = \frac{1}{4}
   \), temos
   o código abaixo.
-  #+begin_src fortran
-    !     Tarefa B - Cálcular <r> e <delta2>
+  #+begin_src fortran :exports code
+    ! Tarefa C - andarilhos em duas dimensoes
+        parameter (m = 1000)
+
         dimension walker(m, 2)
         dimension r(m)
 
+        dimension iStep(2)
+
+        write(*, *) "N"
+        read(*, *) n
+
+        iStep(1) = -1
+        iStep(2) = 1
+
         rMean = 0e0
-        r2mean = 0e0
+        r2Mean  = 0e0
+
+        rX = 0e0
+        rY = 0e0
+
         rnd = rand(iseed)
+        open(unit=10,file='saida-tarefa-c.dat')
         do i = 1, m
-           nSteps = 0
+
            walker(i, 1) = 0
            walker(i, 2) = 0
+
            do j = 1, n
               k = rand() * 2
               k = int((k + 1) / 2) + 1
@@ -286,20 +302,25 @@
               l = int((l + 1) / 2) + 1
               walker(i, k) = walker(i, k) + iStep(l)
            end do
-           r(i) = sqrt(walker(i,1) ** 2 + walker(i, 2) ** 2)
-           rMean = rMean + r(i)
-           r2Mean = r2Mean + r(i)**2
-        end do 
 
-        rMean = rMean / m
-        r2Mean = r2Mean / m
+           write(10, *) walker(i, 1), walker(i, 2)
 
-        rDelta = r2Mean - rMean ** 2
+           rX = rX + walker(i, 1)
+           rY = rY + walker(i, 2)
+           r2Mean = r2Mean + walker(i, 1) ** 2  + walker(i, 2) ** 2
 
+        end do
+        close(10)
+
+        rMean = sqrt(rX**2 + rY**2) / m
         print *,"<r> = ", rMean
-        print *,"delta2 = ", rDelta
+
+        r2Mean = r2Mean / m
+        rDelta = r2Mean - rMean**2 
+        print *,"Δ2 = ", rDelta
         end
-  #+end_src
+
+#+end_src
   
   Foi usado esse código para cálcular \( \left \langle r \right \rangle  \)  e \( \Delta ^2 = \left \langle r^2 \right \rangle -
   \left \langle r \right \rangle ^2  \) e para gerar o gráfico de difusão com \( N = 10, 10^2,..., 10^6   \) , que foi feito a partir
@@ -308,20 +329,24 @@
   #+name: tblC
   #+caption:  
   #+attr_latex: :align |c|c|c| :placement [h!] :center t 
-  |-----+---------------------------+------------|
-  |   N | \( \left \langle r \right \rangle  \) |   \( \Delta^2  \) |
-  |-----+---------------------------+------------|
-  |  $10$ |                2.84767246 | 2.16676140 |
-  | $10^2$ |                9.12911320 | 21.7112961 |
-  | $10^3$ |                27.7685432 | 209.898010 |
-  | $10^4$ |                91.2768021 | 2464.43652 |
-  | $10^5$ |                2464.43652 | 21683.1875 |
-  | $10^6$ |                886.033081 | 225851.500 |
-  |-----+---------------------------+------------|
+  |-------+---------------------------+------------|
+  | N     | \( \left \langle r \right \rangle  \) |  \( \Delta^2  \) |
+  |-------+---------------------------+------------|
+  | $10$  |               0.142056316 | 10.2558203 |
+  | $10^2$ |               0.427055031 | 104.869629 |
+  | $10^3$ |               0.539230943 | 980.699219 |
+  | $10^4$ |                1.50345862 | 10793.6309 |
+  | $10^5$ |                13.0313272 | 99725.5781 |
+  | $10^6$ |                43.1298370 | 1009048.38 |
+  |-------+---------------------------+------------|
 
-  #+caption: Gráficos de difusão de andarilhos em duas dimensões $(X,Y)$.
+  #+caption: Gráficos de difusão de \( M = 1000 \) andarilhos em duas dimensões $(X,Y)$.
   #+attr_latex: :width 20cm :height 20cm :placement [h!]
   [[./tarefaC/tarefa-c-grafico.pdf]]
+
+  Nota-se que, para valores cada vez maiores de \( N \) o vetor médio \( \left \langle r \right \rangle  \)
+  tende a ficar mais longe da origem, ou seja, tem uma maior dispersão e assim como no
+  caso unidimensional a variação \( \Delta ^2 \) é próxima do número de passos.
 
   
   #+latex: \clearpage
@@ -339,9 +364,123 @@
 
   O código usado para gerar o gráfico das trajetórias é o =./tarefaC/tarefa-c-trajetoria.f=.
 
-
   #+latex: \newpage
 * *(D)* Cálculo da entropia 
 
-\blindtext
+ Com intuito de calcular a entropia em presente no sistema de andarilhos aleatórios
+ em duas dimensões, podemos utilizar a seguinte fórmula
+ #+begin_latex
+ \begin{equation}
+  S = - \sum_{i}^{N} P_i \ln(P_i)
+ \label{eq:entropia}
+ \end{equation}
+ #+end_latex
+ onde \( P_i \) é a propriedade de se encontrar um micro-estado específico para \( i \), foi dividido
+ o espaço em um grid de tamanho arbritário escolhido por mim \( w = 5 \), ou seja, vários quadrados
+ de comprimento \( w \) e então calculado a probabilidade \( P_i \) desse micro-estado fazendo 
+ #+begin_latex
+ \begin{equation}
+  P_i = \frac{\text{Quantidade de pontos no quadrado}}{\text{Quantidade total de andarilhos}}
+ \end{equation}
+ #+end_latex
+ a partir dessa relação podemos cálcular a entropia.
 
+ O cálculo envolvido nessa etapa foi apenas uma derivação do que já tinha sido feito na tarefa
+ anterior, onde eram calculadas as posições finais de andarilhos em duas dimensões e assim
+ mostrada a difusão, com alguns ajustes no código foi calculado a entropia para cada passo dado
+ pelos \( M \) andarilhos e então armazenado no arquivo de saída =./tarefaD/saida-tarefa-d.dat=. A
+ partir
+ desse arquivo de saída foi feito o gráfico [grafioc]]. Fiz algumas tentativas de otimização do código,
+ como por exemplo calcular os pontos dentro dos quadrados do grid a partir dos valores \( x \) e \(
+ y \) mínimos
+ cálculados a cada passo para todos andarilhos.
+
+ Segue abaixo o código criado para o cálculo da entropia desse sistema
+
+ Essa estrutura é semelhante à das tarefas anteriores
+#+begin_src fortran :exports code
+!     Tarefa D - Cálcular entropia de caminhantes aleatorios em duas dimensoes      
+      parameter (m = 1000)
+      parameter (n = 1000)
+
+      dimension nWalker(m, 2)
+
+      dimension iStep(2)
+
+      iStep(1) = -1
+      iStep(2) = 1
+
+      rnd = rand(iseed)
+
+      do j = 1, m
+         nWalker(j, 1) = 0
+         nWalker(j, 2) = 0
+      end do
+#+end_src
+
+A partir desse trecho temos as mudanças principais feitas no código
+
+#+begin_src fortran -n 18 :exports code 
+  open(unit=10,file='saida-tarefa-d.dat')
+  do i = 1, n
+
+     do j = 1, m
+        k = rand() * 2
+        k = int((k + 1) / 2) + 1
+        l = rand() * 2
+        l = int((l + 1) / 2) + 1
+        nWalker(j, k) = nWalker(j, k) + iStep(l)
+     end do
+
+
+     ixmin = nWalker(1, 1)
+     ixmax = ixmin
+     iymin = nWalker(1, 2)
+     iymax = iymin
+
+     do j = 2, m
+        if(nWalker(j, 1) < ixmin) then
+           ixmin = nWalker(j, 1)
+        end if
+        if(nWalker(j, 1) > ixmax) then
+           ixmax = nWalker(j, 1)
+        end if
+        if(nWalker(j, 2) < iymin) then
+           iymin = nWalker(j, 2)
+        end if
+        if(nWalker(j, 2) > iymax) then
+           iymax = nWalker(j, 2)
+        end if
+      end do
+       entropy = 0e0
+       isqLen = 5
+
+         do ix = ixmin, ixmax, isqLen
+            do iy = iymin, iymax, isqLen
+               count = 0e0
+               do j = 1, m
+                  iposX = nWalker(j,1) 
+                  iposY = nWalker(j,2) 
+                  if(((iposX <= ix + isqLen) .and. (iposX >= ix)) .and. 
+     $                 (iposY <= iy + isqLen .and. iposY >= iy)) then
+                     count = count + 1
+                  end if
+               end do
+               if(count .ne. 0) then
+                  prob = count / m
+                  entropy = entropy - prob * log(prob)
+               end if
+            end do
+         end do
+         write(10, *) i, entropy
+      end do 
+      close(10)
+      end
+#+end_src
+
+A partir dos pontos cálculados e armazenados no arquivo =./tarefaD/saida-tarefa-d.dat= foi feito o
+gráfico abaixo
+
+  #+attr_latex: :width 15cm :height 10cm :placement [h!]
+  #+caption: Gráfico de entropia para \( M = 1000 \) andarilhos.
+  [[./tarefaD/tarefa-d-grafico.pdf]]

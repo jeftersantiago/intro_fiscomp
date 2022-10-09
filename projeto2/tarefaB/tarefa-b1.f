@@ -1,8 +1,8 @@
-!     Tarefa B - Cálcular <x> e <x²>
+!     Tarefa B - Cálcular <x> e <x2>
       parameter (n = 1000)
-      parameter (m = 10000)
+      parameter (m = 1000)
 
-      parameter (nbin = 100)
+      parameter (nbin = 31)
 
       dimension nwalker(m)
       dimension istep(2)
