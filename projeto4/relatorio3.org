@@ -1,0 +1,451 @@
+#+include: ./header.org
+#+startup: latexpreview
+* Tarefa A - Cálculo de derivada 
+Por definição a derivada de uma função é
+ 
+ #+begin_latex
+ \begin{equation}
+ \frac{d f }{d x} = f' (x) = \lim_{\Delta x\to 0}  \frac{f(x + \Delta x) - f(x)}{\Delta x} 
+ \label{eq:derivativeDefinition}
+ \end{equation}
+ #+end_latex
+
+Essa definição de derivada é chamada de derivada à direita, a derivada à esquerda é dada por
+ #+begin_latex
+ \begin{equation}
+  f'(x) = \lim_{\Delta x \to  0^-} \frac{f(x) - f(x + \Delta x)}{\Delta x} 
+ \label{eq:derivativeDefinitionLeft}
+ \end{equation}
+ #+end_latex
+Para uma função real e contínua o limite pela esquerda e direita são iguais, o valor numérico no
+ entanto, para valores de \( \Delta x \) a derivada à esquerda e à direita podem se aproximar a valores
+ muito diferentes, por isso é necessário encontrar o melhor termo \( \Delta x \).
+
+ A derivada da forma centrada *(derivada simétrica)* apresenta melhor aproximação e é dada por
+
+ #+begin_latex
+ \begin{equation}
+  f'(x) = \lim_{\Delta x \to 0}  \frac{f(x + \Delta x) - f(x - \Delta x)}{2 \Delta x}
+ \label{eq:derivadaCentradaDefinicao}
+ \end{equation}
+ #+end_latex
+ 
+ 
+ Para fazer o cálculo numérico de uma derivada primeiramente discretizamos a variável \( x \), ou
+ seja, fazemos \( x_n \equiv x_0 + nh  \) onde \( n = (0, \pm 1, \pm 2, \cdots ) \) temos então \(
+ f(x) = f(x_n) = f_n = f(x_0 + nh) \).
+
+ Para realizar o cálculo da derivada fazemos uma expansão de taylor da função discretizada, então
+
+ #+begin_latex
+ \begin{equation}
+  f_n = f(x_n) = \sum_{n = 0}^{\infty}    \frac{f(x_0)}{n!} (x_n - x_0)^n
+ \label{eq:taylorExpantion}
+ \end{equation}
+ #+end_latex
+
+ fazendo \( x_n \equiv x_0 + nh \Rightarrow  x_n - x_0 \equiv nh \) e substituindo na expansão de Taylor
+ temos
+
+ #+begin_latex
+ \begin{equation}
+    f(x_n) =  \sum  _{ n  = 0}^{\infty}  \frac{f(x_0)}{n!} (nh)^n 
+ \label{eq:expansaoTaylor}
+ \end{equation}
+ #+end_latex
+
+ usando a expansão para cálcular a derivada primeira de \( x \) à direita, temos
+
+\[ f(x_1) = f(x_0) + 1 \cdot  h f'(x_1)  \Rightarrow  f'(x_1) = \frac{f(x_1) - f(x_0)}{h}\]
+
+ #+begin_latex
+ \begin{equation}
+ f' = \frac{f_1 - f_0}{h} + \mathcal{O} (h)
+ \label{eq:primeiraDerivada}
+ \end{equation}
+ #+end_latex
+
+ e a primeira derivada de \( x \) à esquerda é dada por
+ #+begin_latex
+ \begin{equation}
+ f' = \frac{f_0 - f_{-1}}{h}  + \mathcal{O}(h)
+ \end{equation}
+ #+end_latex
+
+ A derivada simétrica em três pontos, ou seja, a derivada centrada
+ (\ref{eq:derivadaCentradaDefinicao}) que como foi dito é a que apresenta melhor aproximação pode
+ ser escrita como
+
+ #+begin_latex
+ \begin{equation}
+ f' =  \frac{f_1 - f_{-1}}{2h} + \mathcal{O} (h^2)
+ \label{eq:derivadaSimetrica} 
+ \end{equation}
+ #+end_latex
+
+ Queremos também cálcular a primeira derivada simétrica em 5 pontos, temos então
+
+ \[ f_5 ' = \frac{f(x - 2h) - 8f(x - h) + 8f(x+h) - f(x + 2h)}{12h}  \]
+
+ #+begin_latex
+ \begin{equation}
+ f' = \frac{f_{-2} - 8 f_{-1} + 8 f_{1} - f_2}{12h} + \mathcal{O} (h^4) 
+ \label{eq:derivadaSimetrica5pontos}
+ \end{equation}
+ #+end_latex
+
+ é esperado que as derivadas escritas nas formas (\ref{eq:derivadaSimetrica}) e
+ (\ref{eq:derivadaSimetrica5pontos}) tenha uma convergência mais rapída para o valor
+ encontrado analiticamente pois a função é cálculada em mais pontos nessas formúlas, isso reduz
+ o erro esperado para o cálculo numérico dessas derivadas.
+
+
+ Além das derivadas primeiras também precisamos fazer o cálculo numérica das segunda e terceira derivada de
+ função utilizando as formúlas simétrica e anti-simétrica em 5 pontos, respectivamente.
+
+
+ #+begin_latex
+ \begin{equation}
+ f'' =  \frac{-f_{-2} + 16 f_{-1} - 30 f_{0} + 16 f_{1} - f_{2}} {12h^2} + \mathcal{O}(h^4)
+ \label{eq:derivada2Simetrica5pontos}
+ \end{equation}
+
+ \begin{equation}
+ f''' =  \frac{-f_{-2} + 2 f_{-1} - 2 f_{1} + f_{2}}{2h^3} + \mathcal{O} (h^2)
+ \label{eq:derivada3Antisimetrica5pontos}
+ \end{equation}
+ #+end_latex
+
+ 
+** Resolução
+ 
+ Queremos implementar um programa que calcule a derivada
+ da função $f(x) = \cosh(3x)\sin\left( \frac{x}{2}\right)$ no ponto \( x = \frac{1}{2} \), com precisão dupla. 
+
+\[ \frac{d}{dx}f(x) = \frac{d}{dx} \cosh(3x) \frac{d}{dx} \left( 3x \right) \sin \left( \frac{x}{2}
+\right) + \frac{1}{2} \cosh \left( 3x \right) \cos \left( \frac{x}{2} \right) \]
+
+
+#+begin_latex
+\begin{equation}
+\frac{d}{d x}f = 3 \sinh(3x)\sin \left(
+\frac{x}{2} \right)  + \frac{1}{2} \cosh(3x) \cos \left( \frac{x}{2} \right) 
+\label{eq:tarefaA-derivada1}
+\end{equation}
+
+\begin{equation}
+\frac{d^2}{d x^2}f(x) = 3 \sinh(3x) \cos \left( \frac{x}{2} \right) + \frac{35}{4} \cosh(3x) \sin \left( \frac{x}{2} \right)
+\label{eq:tarefaA-derivada2}
+\end{equation}
+
+\begin{equation}
+\frac{d^3}{dx^3}f(x) = \frac{1}{8}\left[ 198 \sinh (3x) \sin \left( \frac{x}{2} \right)  + 107 \cosh(3x) \cos \left( \frac{x}{2} \right) \right]
+\label{eq:tarefaA-derivada3}
+\end{equation}
+
+#+end_latex
+
+** Código em Fortran
+#+begin_src fortran :exports code
+!     Cálculo das derivadas de uma função f(x)
+      implicit real*8 (a-h, o-z)
+      parameter (n = 14)
+      dimension h(n)
+      h = (/5.0e-1, 2.0e-1, 1.0e-1, 5.0e-2, 1.0e-2, 5.0e-3, 1.0e-3,
+     $     5.e-4, 1.0e-4, 5.0e-5, 1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8/)
+
+      x = 0.5d0
+
+      df = 3*sin(x/2)*sinh(3*x)+(0.5)*cos(x/2)*cosh(3*x)
+      df2 = 3*sinh(3*x)*cos(x/2)+(8.75)*cosh(3*x)*sin(x/2)
+      df3 = (0.125)*(198*sinh(3*x)*sin(x/2)+107*cosh(3*x)*cos(x/2)) 
+
+      open(unit = 10, file="saida.dat")
+
+      do i = 1, n
+
+         fr = f(x+h(i))
+         fl = f(x-h(i))
+
+         fr2 = f(x + 2*h(i))
+         fl2 = f(x - 2*h(i))
+
+         df_r = (fr-f(x))/h(i)
+         df_l = (f(x)-fl)/h(i)
+         df_sm3 = (fr-fl)/(2*h(i))
+
+         df_sm5 = (fl2 + 8*(fr-fl) - fr2)/(12*h(i))
+
+         df2_sm5=(-fl2-fr2+16*(fr+fl)-30*f(x))/(12*h(i)**2)
+
+         df3_asm5 = (fr2-fl2+2*(fl-fr))/(2*h(i)**3)
+
+         err_r = abs(df - df_r)
+         err_l = abs(df - df_l)
+         err_sm3 = abs(df - df_sm3)
+         err_sm5 = abs(df - df_sm5)
+         err_asm5 = abs(df2 - df2_sm5)
+         err2_asm5  = abs(df3 - df3_asm5)
+
+         write(10, *) h(i), err_sm3, err_r, err_l, err_sm5, err_asm5,
+     $        err2_asm5
+      end do
+
+      write(10, *) "Valores exatos", df, df, df, df, df2, df3
+      close(10)
+      end
+
+      function f(x)
+      implicit real * 8 (a-h, o-z)
+      f = cosh(3 * x) * sin(x / 2)
+      return 
+      end
+#+end_src
+** Resultados
+
+Na tabela abaixo estão os resultados para as fórmulas de derivação dadas.
+#+begin_latex
+\begin{table}[h!]
+\caption{Erros cálculados para cada método para diferentes $h$.}
+\scalebox{0.7}{
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\textbf{H} & \textbf{\begin{tabular}[c]{@{}c@{}}Derivada simétrica \\ (3 pontos)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Derivada à esquerda\\  (2 pontos)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Derivada à direita \\ (2 pontos)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Derivada simétrica \\ (5 pontos)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Derivada segunda\\  simétrica (5 pontos)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Derivada terceira \\ anti-simétrica  (5 pontos)\end{tabular}} \\ \hline
+0.5        & 2.106678323581137                                                                 & 5.7693816931927806                                                                 & 1.5560250460305065                                                                & 1.4953176671794182                                                                & 1.3930924069170949                                                                        & 42.924442381871593                                                                               \\ \hline
+0.2        & 0.2972794239134368                                                                & 1.4753863116237089                                                                 & 0.88082746379683474                                                               & 0.0296455144898608                                                                & 0.0297818925915418                                                                        & 5.5152779026445273                                                                               \\ \hline
+0.1        & 0.0729809779543329                                                                & 0.6432406862433164                                                                 & 0.49727873033465064                                                               & 0.0017851706987017                                                                & 0.0018137229953048                                                                        & 1.3362264585161228                                                                               \\ \hline
+0.05       & 0.0181623416769949                                                                & 0.3009748744740963                                                                 & 0.26465019112010646                                                               & 0.0001105370821177                                                                & 0.0001126244404687                                                                        & 0.3314463185106291                                                                               \\ \hline
+0.01       & 0.0007254350693797                                                                & 0.0571401661611141                                                                 & 0.05568929602235517                                                               & 0.0000001763316666                                                                & 0.000000179821562                                                                         & 0.0132246126315749                                                                               \\ \hline
+0.005      & 0.0001813505025749                                                                & 0.0283864091768912                                                                 & 0.02802370817174138                                                               & 0.0000000110196931                                                                & 0.0000000112304867                                                                        & 0.0033058937863472                                                                               \\ \hline
+0.001      & 0.0000072539153306                                                                & 0.0056481184098053                                                                 & 0.00563361057914457                                                               & 0.0000000000176307                                                                & 0.0000000000962678                                                                        & 0.0001322371209724                                                                               \\ \hline
+0.0005     & 0.0000018134779331                                                                & 0.0028222434185711                                                                 & 0.00281861646270531                                                               & 0.0000000000011995                                                                & 0.0000000012805045                                                                        & 0.0000336493304331                                                                               \\ \hline
+0.0001     & 0.0000000725387008                                                                & 0.0005641583393649                                                                 & 0.00056401326196331                                                               & 0.0000000000005901                                                                & 0.0000000703183751                                                                        & 0.0001155361312044                                                                               \\ \hline
+0.00005    & 0.0000000181361059                                                                & 0.0002820610344951                                                                 & 0.00028202476228323                                                               & 0.0000000000019078                                                                & 0.0000001295302745                                                                        & 0.0013832650656269                                                                               \\ \hline
+0.00001    & 0.0000000007289187                                                                & 0.0000564093137036                                                                 & 0.00005640785586624                                                               & 0.0000000000044981                                                                & 0.0000036822441327                                                                        & 0.0582266882343915                                                                               \\ \hline
+0.000001   & 0.0000000000062448                                                                & 0.0000056409384248                                                                 & 0.00000564092593524                                                               & 0.0000000000122586                                                                & 0.0002222532222138                                                                        & 67.498841907047023                                                                               \\ \hline
+0.0000001  & 0.0000000000117452                                                                & 0.000000564536656                                                                  & 0.00000056456014663                                                               & 0.0000000000117452                                                                & 0.0018504836939516                                                                        & 43.523461396381741                                                                               \\ \hline
+0.00000001 & 0.0000000000107425                                                                & 0.0000000555218941                                                                 & 0.00000005550040915                                                               & 0.0000000000107425                                                                & 0.5606629230281115                                                                        & 43.523461396381741                                                                               \\ \hline
+Exatos     & 2.7200159512296831                                                                & 2.7200159512296831                                                                 & 2.7200159512296831                                                                & 2.7200159512296831                                                                & 11.281716150250322                                                                        & 43.523461396381741                                                                               \\ \hline
+\end{tabular}
+}
+\end{table}
+#+end_latex
+
+Note que, para as fórmulas para cálculo da primeira derivada o aumento de pontos calculados aumenta
+a precisão do cálculo, então como esperado o método que oferece maior precisão e estabilidade é o
+da derivada simétrica em 5 pontos. No entanto, essa precisão decai para \(h \) a partir da ordem \( 10^{-5}\) 
+podemos dizer então que o método é melhor para \( h \) até esta ordem, já que o calculo a partir
+dele converge para o valor mais preciso em menos iterações que os outros métodos (3 pontos à
+esquerda, direita e simétrica).
+
+O caso da derivada terceira anti-simétrica em 5 pontos expõe um problema computacional relacionado aos
+pontos flutuantes em que para \( h \) muito pequeno se torna impossível saber o erro atrelado ao cálculo.
+Isso acontece porque o computador pode estar alocando valores aleatórios (ou lixo) no espaço que a
+variável do erro não estava preenchendo.
+
+No gráfico abaixo podemos observar o comportamento de todos os métodos para vários \( h \) cada vez
+menores. A partir desse gráfico compilei os melhores \( h \) para cada método.
+
+
+#+caption: Comportamento do erro em relação ao \( h\) para todas as derivdas cálculadas.
+#+attr_latex: :width 13cm :height 10cm 
+[[./tarefa-a/tarefa-a-saida.pdf]]
+
+#+begin_latex
+\begin{table}[h!]
+\caption{Melhores ordens de grandeza de $h$ para cada um dos métodos.}
+\scalebox{0.8}{
+\begin{tabular}{@{}ccccccc@{}}
+\toprule
+             & \begin{tabular}[c]{@{}c@{}}Derivada simétrica \\ (3 pontos)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Derivada à esquerda\\  (2 pontos)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Derivada à direita \\ (2 pontos)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Derivada simétrica \\ (5 pontos)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Derivada segunda\\  simétrica (5 pontos)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Derivada terceira \\ anti-simétrica  (5 pontos)\end{tabular} \\ \midrule
+$h \approx $ & $10^{-7}$                                                                & $10^{-9}$                                                                 & $10^{-9}$                                                                & $10^{-4}$                                                                & $10^{-4}$                                                                        & $10^{-5}$                                                                               \\ \bottomrule
+\end{tabular}
+}
+\end{table}
+#+end_latex
+
+O desvio apresentado pela derivada à esquerda e à direita em 2 pontos é igual e apresentam uma
+linearidade relacionada ao valor de \( h \). Utilizando valores menores de \( h \) podemos aproximar
+a derivada bem até bastante casas decimais, porém, os métodos usando derivada simétrica ainda assim
+são melhores para aproximação dado um \( h \) correto conseguem melhor precisão em menos iterações.
+
+\clearpage
+* Tarefa B - Cálculo de integral
+
+ Foi implementado um código que cálcula a integral
+ \[ \int_{0}^{1} e^{\frac{x}{4}} \sin {\pi x} dx  \]
+ usando os métodos: regra do trapézio, regra de Simpson e regra de Boole.
+
+#+begin_latex
+ \begin{equation}
+  \int_{a}^{b} f(x) dx = \frac{h}{2} \left( f_{-1}+ 2 f_0 + f_1 \right)+ \mathcal{O} (h^3) 
+ \label{eq:trapezio}
+ \end{equation}
+
+ 
+ \begin{equation}
+  \int_{a}^{b}  f(x)dx   = \frac{h}{3} \left( f_1 + 4f_0 + f_{-1}\right)+ \mathcal{O} (h^5)
+ \end{equation}
+
+ \begin{equation}
+ \int_{a}^{b} f(x)dx = \frac{2h}{45} \left( 7f_0 + 32 f_1 + 12 f_2 + 32f_3 + 7f_4) \right)  + \mathcal{O} (h^7)
+ \end{equation}
+ #+end_latex
+
+** Código em Fortran
+#+begin_src fortran :exports code
+!     Cacula integral da funcao f(x) = exp(x/4)sin(pi x)
+!     em [a, b] = [0, 1]
+      implicit real * 8 (a-h, o-z)
+      n = 12
+
+      open(unit = 11, file="saida.dat")
+
+      write(11, 3) 
+ 3    format(12(' '), 'N', 16(' '), 'h', 16(' '), 'Regra do Trapezio',
+     $     9(' '), 'Regra de Simpson', 10(' '), 'Regra de Boole')
+
+      f_int = f_integral(1.0d0) - f_integral(0.0d0)
+
+      do j = 1, 10
+
+         trap = 0.0d0
+         simp = 0.0d0
+         boole = 0.0d0
+
+         h = 1.0d0 / n
+
+         do i = 1, n, 2
+
+            x = i * h
+
+            f0 = f(x)
+            f1_ = f(x - h)
+            f1 = f(x + h)
+           
+            trap = trap + (h/2) * (f1_ + 2 * f0 + f1)
+            simp = simp + (h/3) * (f1_ + 4 * f0 + f1)
+         end do
+
+         do i = 0, n-4, 4
+
+            x = i * h
+
+            f0 = f(x)
+            f1 = f(x + h)
+            f2 = f(x + 2*h)
+            f3 = f(x + 3*h)
+            f4 = f(x + 4*h)
+
+            boole = boole + (7*f0+32*f1+12*f2+32*f3+7*f4)
+         end do
+         boole = boole * (2*h/45)
+
+         err1 = abs(trap - f_int)
+         err2 = abs(simp - f_int)
+         err3 = abs(boole - f_int)
+
+         write(11, *) n, h, err1, err2, err3
+
+         n = 2*n
+      end do
+      
+      write(11, *) "Valores exatos"
+      write(11, 6) f_int, f_int, f_int
+ 6    format(28(' '), d25.18, d25.18, d25.18)
+
+      close(11)
+      end
+
+      function f(x)
+      implicit real * 8 (a-h, o-z)
+      f = exp(x / 4) * sin(acos(-1.0d0) * x)
+      return
+      end
+
+      function f_integral(x)
+      implicit real * 8 (a-h, o-z)
+      pi = acos(-1.d0)
+      f_integral = 4*exp(x/4)*(sin(pi*x)-4*pi*cos(pi*x))/(1+16*pi**2)
+      return
+      end 
+#+end_src
+\clearpage
+** Resultados 
+
+#+begin_latex
+\begin{table}[h!]
+\caption{Erros calculados para a integral $\int_{0}^{1}  e^{\frac{x}{4}} \sin(\pi x) dx$ usando a regra do Trapézio, de Simpson e de Boole, respectivamente.}
+\begin{tabular}{|c|c|ccc|}
+\hline
+\textbf{N} & $h$               & \multicolumn{1}{c|}{\textbf{Regra do Trapezio}} & \multicolumn{1}{c|}{\textbf{Regra de Simpson}} & \textbf{Regra de Boole} \\ \hline
+12         & 0.08333333333333333      & \multicolumn{1}{c|}{0.0041571359729468}         & \multicolumn{1}{c|}{0.0000187593023729}        & 0.0000004800312709      \\ \hline
+24         & 0.04166666666666666      & \multicolumn{1}{c|}{0.0010384097928567}         & \multicolumn{1}{c|}{0.0000011656005067}        & 0.0000000073129510      \\ \hline
+48         & 0.02083333333333333      & \multicolumn{1}{c|}{0.0002595478905307}         & \multicolumn{1}{c|}{0.0000000727435781}        & 0.0000000001135505      \\ \hline
+96         & 0.01041666666666666      & \multicolumn{1}{c|}{0.0000648835640231}         & \multicolumn{1}{c|}{0.0000000045448130}        & 0.0000000000017713      \\ \hline
+192        & 0.00520833333333333      & \multicolumn{1}{c|}{0.0000162206779871}         & \multicolumn{1}{c|}{0.0000000002840249}        & 0.0000000000000277      \\ \hline
+384        & 0.00260416666666666      & \multicolumn{1}{c|}{0.0000040551561835}         & \multicolumn{1}{c|}{0.0000000000177518}        & 0.0000000000000004      \\ \hline
+768        & 0.00130208333333333      & \multicolumn{1}{c|}{0.0000010137882134}         & \multicolumn{1}{c|}{0.0000000000011098}        & 0.0000000000000001      \\ \hline
+1536       & 0.00065104166666666      & \multicolumn{1}{c|}{0.0000002534470014}         & \multicolumn{1}{c|}{0.0000000000000691}        & 0.0000000000000008      \\ \hline
+3072       & 0.00032552083333333      & \multicolumn{1}{c|}{0.0000000633617467}         & \multicolumn{1}{c|}{0.0000000000000049}        & 0.0000000000000003      \\ \hline
+6144       & 0.00016276041666666      & \multicolumn{1}{c|}{0.0000000158404362}         & \multicolumn{1}{c|}{0.0000000000000004}        & 0.0000000000000007      \\ \hline
+Exatos     & \cellcolor[HTML]{330001} & \multicolumn{3}{c|}{0.722452884092878111}                                                                                  \\ \hline
+\end{tabular}
+\end{table}
+#+end_latex
+
+Nota-se a grande diferença entre os métodos empregados, sobretudo o de Boole, que consegue na sua
+oitava iteração a mesma precisão o de Simpson consegue na ultima. Entretanto o método de Boole
+também possui o maior complexidade computacional que os outros métodos implementados.
+
+Além disso, os métodos de quadratura apresentam uma maior estabilidade que
+os métodos de derivação, conforme o valor de \( h \) foi diminuído o valor da integral calculada não
+teve oscilações muito grandes no seu desvio.
+
+#+caption: Comportamento do erro em relação ao \( h\) para todas as derivdas cálculadas.
+#+attr_latex: :width 13cm :height 10cm 
+[[./tarefa-b/tarefa-b-grafico.pdf]]
+
+Pelo gráfico podemos notar que o método de Boole apresenta melhor precisão para quase todos
+valores de \( h \) e os outros dois métodos possuem comportamento linear.
+
+\clearpage 
+* Tarefa C - Cálculo de raízes :noexport:
+
+ Cálcular raízes positivas e negativas da função
+   #+begin_latex
+ \begin{equation}
+  f(x) = x^3 - \frac{3}{2}x^2 - \frac{3}{2}x + 1 
+  \label{eq:polinomio}
+ \end{equation}
+  #+end_latex
+   usando os métodos: procura direta, Newton-Raphson e método da secante.
+
+   #+caption: $f(x) = x^3 - \frac{3}{2} x^2 - \frac{3}{2} x + 1$
+   #+attr_latex: :width 8cm :height 8cm :placement [h!]
+  [[./tarefa-c/tarefa-c-grafico.pdf]]
+
+  Pelo gráfico da função sabemos quais são os valores esperados de \( x \) para a raíz da função \(
+  f(x) \) é
+  o conjunto de pontos  \( S = \{ -1, 1/2, 2\}  \)
+
+** Método de Newton-Raphson para o cálculo de raízes
+  O método de Newton-Raphson permite o cálculo de raízes de polinômio a partir de um dado ponto \(
+  x_0 \),
+  e a raíz é encontrada a partir do valor da função \( f(x) \) e da sua derivada \( f'(x) \). Essa
+  forma de cálcular as raízes é construido a partir de um argumento geométrico e utilizando a
+  expansão Taylor e portanto é eficiente para convergência local e não muito útil para convergência
+  global, ou seja, as raízes tem mais chances de serem encontradas se nosso valor de teste \( x_0 \)
+  for proxímo da raíz.
+
+
+  #+begin_latex
+  \begin{equation}
+   x_{i + 1} = x_i - \frac{f(x_i)}{f'(x_i)}  
+  \label{eq:newtonRaphson}
+  \end{equation}
+  #+end_latex
+
+  Queremos um número de iterações máximo igual a \( m = 6 \) para encontrar uma raíz da função
+  (\ref{eq:polinomio}), foi definido a precisão \( \epsilon = 10^{-16} \) e a partir desse limitante
+  executamos o cálculo da raíz.

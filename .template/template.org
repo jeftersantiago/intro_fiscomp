@@ -11,4 +11,7 @@
 #+latex_header: \usepackage{algpseudocode}
 #+latex_header: \usepackage{algorithm}
 
+#+latex_header: \usepackage{booktabs}
+
+
 \newpage
