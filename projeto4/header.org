@@ -1,15 +1,11 @@
-#+title: *\Huge{Projeto 03}*
-#+subtitle: \huge{Métodos básicos de integração e derivação}
+#+title: *\Huge{Projeto 04}*
+#+subtitle: \huge{Movimento oscilatório}
 #+author: *\Lage{Jefter Santiago Mares}* @@latex:\\@@ n$^{\circ}$ USP:12559016
 #+options: num:1 toc:1  date:t
 #+language: pt
 #+date: 12 de novembro de 2022 
 
 #+latex_header: \documentclass[a4paper]{report}
-#+latex_header: \usepackage[backend=bibtex,bibencoding=ascii,style=chem-angew,citestyle=numeric-comp,sorting=none]{biblatex}
-#+latex_header: \addbibresource{~/Projects/unibib/References/lab-lib.bib}
-#+latex_header:\usepackage{amsmath} % or simply amstext
-
 
 #+begin_latex 
 \begin{figure}[t!]
