@@ -8,8 +8,5 @@ set ylabel "$\\theta$ (radianos)"
 set style line 1 lc rgb "red" lw 3 
 set style line 2 lc rgb "blue" lw 3 
 
-plot 'data-oscilacoes.dat' using 0:2 with lines ls 1 t "Método de Euler" ,\
-     'data-oscilacoes.dat' using 0:4 with lines ls 2 t "Método de Euler-Cromer"
-     
-
-
+plot 'saida-oscilacoes.dat' using 0:2 with lines ls 1 t "Método de Euler" ,\
+     'saida-oscilacoes.dat' using 0:4 with lines ls 2 t "Método de Euler-Cromer"
