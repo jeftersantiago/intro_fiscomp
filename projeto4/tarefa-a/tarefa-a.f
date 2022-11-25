@@ -1,7 +1,7 @@
       implicit real * 8 (a-h, o-z)
 
       parameter(n = 1000)
-      parameter(tt = 50)
+      parameter(tt = 100)
       parameter(pi = acos(-1.0d0))
 
 !     Gravidade
@@ -25,6 +25,7 @@
 
       do i = 1, n
 
+         t = t + dt
 
 !     Metodo de Euler
          tmp_omg1 = omg1 - tt1 * dt
@@ -47,7 +48,7 @@
 
          write(10, *) t, omg1, tmp_tt1, omg2, tmp_tt2
          write(11, *) t, e1, e2
-         t = t + dt
+
       end do
       close(10)
       close(11)

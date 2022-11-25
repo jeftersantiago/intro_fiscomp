@@ -8,7 +8,8 @@ set ylabel "Energia"
 set style line 1 lc rgb "red" lw 3 
 set style line 2 lc rgb "blue" lw 3 
 
-# set logscale xy
+set logscale xy
 
-plot 'saida-energias-discretizado.dat' using 0:1 with lines ls 1 t "Método de Euler",\
-     'saida-energias-discretizado.dat' using 0:2 with lines ls 2 t "Método de Euler-Cromer"
+plot 'saida-energias-discretizado.dat' using 0:2 with lines ls 1 t "Método de Euler"  ,\
+     'saida-energias-discretizado.dat' using 0:3 with lines ls 2 t "Método de Euler-Cromer"
+
