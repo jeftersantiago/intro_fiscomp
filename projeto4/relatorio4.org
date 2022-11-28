@@ -1,7 +1,6 @@
 #+include:  ./header.org
 #+startup: latexpreview
 
-
 * Tarefa A
 O objetivo dessa tarefa é implementar o método de Euler e o método de Euler-Cromer para
 discretização do sistema do pêndulo simples. Primeiramente vamos analisar as equações diferenciais que descrevem
@@ -374,7 +373,7 @@ $5\pi/6$    & 11.111111111112876                                                
 \end{table}
   #+end_latex
 
-  Para valores iniciais de \( \theta _0 \to 0 \), nota-se que o ângulo inicial é irrelevante na
+  Para valores iniciais de \( \theta _0 \leq  \pi / 6  \), nota-se que o ângulo inicial é irrelevante na
   determinação do período, foram feitas aproximações afim de demonstrar que para \( \theta _0 \)
   pequenos o período é dado por
   #+begin_latex
@@ -401,7 +400,9 @@ $\pi/96$   & 6.2893081761016276                                                 
   Como esperado o comportamento do período para ângulos iniciais pequenos pode ser aproximado pela
   (\ref{eq:aproxPeriodo}) e nas simulações feitas obtive até a aproximação para um erro de até \(
   10^{-2}\).
+
 ** *B3*
+  #+name: b3
   Sabemos que a fórmula geral da oscilação de um do pêndulo simples é dada por
 
   #+begin_latex
@@ -446,13 +447,43 @@ $\pi/96$   & 6.2893081761016276                                                 
   #+name: graficoB3
   #+caption: Gráfico de \( \theta \times t\) com \( \gamma  = \frac{1}{2} \) 
   #+attr_latex: :width 10cm :height 8cm :placement [!h]
-  [[./tarefa-b/tarefa-b3-grafico-oscilacoes.pdf]]
-  
-  
+  [[./tarefa-b/b3/tarefa-b3-grafico-oscilacoes.pdf]]
   #+latex:\clearpage
-
 ** *B4*
 
+  Analisando o sistema para o caso onde \( \gamma  = \frac{1}{2} \), \( \Omega = \frac{3}{2} \)com \(
+\Delta t = 0.03 \) para \( F_0 = 0, F_0 = \frac{1}{2} \text{ e } F_0 = \frac{6}{5} \) temos os
+  gráficos conjuntos de para o \( \theta  \) e \( \omega \) em função do tempo.
+
+  #+attr_latex: :width 10cm :height 8cm :placement [!h]
+  [[./tarefa-b/b4/tarefa-b4-grafico-omega.pdf]]
+
+  #+attr_latex: :width 10cm :height 8cm :placement [!h]
+  [[./tarefa-b/b4/tarefa-b4-grafico-theta.pdf]]
+  
+  A aproximação numérica para a frequência do caso onde \( F_0 = 0 \) nós dá \( f =
+  6.4516129032256053 \), esse é o caso
+  do pêndulo com apenas forças dissipativas presentes (sistema analisado no *B3*), portanto, sabemos
+  que a frequência tende a ser nula, já que o sistema é amortecido até não haver mais oscilação.
+
+  Para o caso de \( F_0 = \frac{1}{2} \) as oscilações forçadas tem energia mantida a mesma durante
+  toda evolução do sistema, por isso o comportamento do gráfico é o de um pêndulo simples, como
+  estudado nas seções anteriores.
+
+  Já para \( F_0 = \frac{6}{5} \) o sistema tem comportamento caótico. Uma forma de mostrar que o
+  sistema pode ser caótico para um \( F_0 \) podemos analisar o comportamento do sistema para
+  difentes valores iniciais de \( \theta  \), isto é, mostrar que o sistema é sensível a valores
+  iniciais e que valores minimamente diferentes podem fazer com que o sistema evolua de formas
+  muito diferentes. O gráfico ([[graficob4]]) ilustra bem esse fenômeno.
+
+  #+name: graficob4
+  #+caption: Gráfico de \( \theta \times t \) para diferentes \( \theta_s  \) com \( \gamma = \frac{1}{2}, \Omega = \frac{2}{3}  \)  e \( F_0 = \frac{6}{5} \) .
+  #+attr_latex: :width 10cm :height 8cm :placement [!h]
+   [[./tarefa-b/b4/tarefa-b4-grafico-thetas.pdf]]
+
+  Por causa desse comportamento do gráfico não é possível cálcular a frequência já que o sistema não
+  é periódioco durante toda sua evolução temporal.
+#+latex:\clearpage
 * Tarefa C
 * Tarefa D
 * Tarefa E
