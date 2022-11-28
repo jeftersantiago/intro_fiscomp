@@ -1,17 +1,32 @@
-#+setupfile: ~/Dropbox/Templates/latex-org/org_header.org
-
 #+language: pt
 
-#+latex_header: \usepackage[margin=0.5in]{geometry}
-#+latex_header: \titleformat{\section}{\Large\bfseries}{}{.5em}{}[\hrule]
+#+latex_header: \usepackage[brazil]{babel}
+#+latex_header: \usepackage{titling}
+#+latex_header: \usepackage{amsmath}
+#+latex_header: \usepackage{titlesec}
+#+latex_header: \usepackage{caption}
+#+latex_header: \usepackage{graphicx}
+#+latex_header: \usepackage{multicol}
+
+
+#+latex_header: \usepackage{minted}
+#+latex_header: \usepackage{fontspec}
+
+
+#+latex_header: \setminted{basicstyle=\ttfamily\footnotesize}
+#+latex_header: \usemintedstyle{pastie}
+
+
+
+
+#+latex_header: \usepackage[margin=0.9in]{geometry}
+#+latex_header: \titleformat{\section}{\Large\bfseries}{}{.5em}{}[]
 #+latex_header: \titlespacing{\section}{0em}{1.5em}{1.5em}
 #+latex_header: \titleformat{\subsection}{\large\bfseries}{\thesubsection}{.5em}{}
 #+latex_header: \titlespacing{\section}{0em}{1.5em}{1.5em}
 
 #+latex_header: \usepackage{algpseudocode}
 #+latex_header: \usepackage{algorithm}
-
 #+latex_header: \usepackage{booktabs}
-
 
 \newpage

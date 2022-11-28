@@ -63,127 +63,395 @@ o método de Euler-Cromer é uma variação do anterior, é representado pelas e
 
 #+caption: Declaração das variáveis utilizadas. 
 #+begin_src fortran :exports code
-          implicit real * 8 (a-h, o-z)
+      implicit real * 8 (a-h, o-z)
 
-          parameter(n = 1000)
-          parameter(tt = 50)
-          parameter(pi = acos(-1.0d0))
+      parameter(n = 10000)
+      parameter(tt = 100)
+      parameter(pi = acos(-1.0d0))
 
-!         Gravidade
-          parameter(p = 9.8d0)
-!         Comprimento
-          parameter(s = 9.8d0)
-          dt = (tt * 1.0d0) / (n * 1.0d0)
+!     Gravidade
+      parameter(p = 9.8d0)
+!     Comprimento
+      parameter(s = 9.8d0)
+!     p/s = 1.0d0
 
-          tt1 = (2 * pi) / 48d0
-          omg1 = 0.0d0
-          e1 = (1.0d0/2.0d0)*s**2
+      dt = (tt * 1.0d0) / (n * 1.0d0)
 
-          tt2 = tt1 
-          omg2 = omg1
-          e2 = e1
+      tt1 = (2 * pi) / 48d0
+      omg1 = 0.0d0
+      e1 = - p * cos(tt1)
 
-          open(10, file="data-oscilacoes.dat")
-          open(11, file="data-energias.dat")
+      tt2 = tt1 
+      omg2 = omg1
+      e2 = e1
+
+      open(10, file="data-oscilacoes.dat")
+      open(11, file="data-energias.dat")
+
+
+            implicit real * 8 (a-h, o-z)
+
+            parameter(n = 1000)
+            parameter(tt = 50)
+            parameter(pi = acos(-1.0d0))
+
+  !         Gravidade
+            parameter(p = 9.8d0)
+  !         Comprimento
+            parameter(s = 9.8d0)
+            dt = (tt * 1.0d0) / (n * 1.0d0)
+
+            tt1 = (2 * pi) / 48d0
+            omg1 = 0.0d0
+            e1 = (1.0d0/2.0d0)*s**2
+
+            tt2 = tt1 
+            omg2 = omg1
+            e2 = e1
+
+            open(10, file="data-oscilacoes.dat")
+            open(11, file="data-energias.dat")
 
 #+end_src
 
+#+name: eulerCromer
 #+caption: Estrutura dos cálculos e impressão nos arquivos =saida-oscilacoes.dat= e =saida-energias.dat=
 #+begin_src fortran :exports code
-        do i = 1, n
+      do i = 1, n
 
-           t = t + dt
+         t = t + dt
 
-  !     Metodo de Euler
-           tmp_omg1 = omg1 - tt1 * dt
-           tmp_tt1 = tt1 + omg1 * dt
+!     Metodo de Euler
+         tmp_omg1 = omg1 - tt1 * dt
+         tmp_tt1 = tt1 + omg1 * dt
 
-           omg1 = tmp_omg1
-           tt1 = tmp_tt1
+         omg1 = tmp_omg1
+         tt1 = tmp_tt1
 
-  !     Metodo de Euler-Cromer
-           tmp_omg2 = omg2 - tt2 * dt
-           tmp_tt2 = tt2 + tmp_omg2 * dt
+!     Metodo de Euler-Cromer
+         tmp_omg2 = omg2 - tt2 * dt
+         tmp_tt2 = tt2 + tmp_omg2 * dt
          
-           omg2 = tmp_omg2
-           tt2 = tmp_tt2
+         omg2 = tmp_omg2
+         tt2 = tmp_tt2
 
-  !     Energia do sistema
-           e1 = e1 + (1.0d0/2.0d0) * s ** 3 * (omg1**2 + tt1**2)
-           e2 = e2 + (1.0d0/2.0d0) * s ** 3 * (omg2**2 + tt2**2)
+!     Energia do sistema
+         e1 = (1.0d0/2.0d0) * s **2 * omg1**2 + p * s * cos(tt1)
+         e2 = (1.0d0/2.0d0) * s **2 * omg2**2 + p * s * cos(tt2)
 
-           write(10, *) t, omg1, tmp_tt1, omg2, tmp_tt2
-           write(11, *) t, e1, e2
-        end do
-        close(10)
-        close(11)
-        end
+         write(10, *) t, omg1, tmp_tt1, omg2, tmp_tt2
+         write(11, *) t, e1, e2
+
+      end do
+      close(10)
+      close(11)
+      end
 #+end_src
 #+latex:\clearpage
 ** Resultados
-Apesar do sistema ser oscilatório e sem presença forças dissipativas, o método de Euler apresenta um
-comportamento contrário ao esperado. A amplitude das oscilações aumenta com o tempo. O método pode
-não apresentar esse comportamento se a escala de tempo utilizada for muito curta, mas para periodo
-maiores de tempo fica aparente.
+  Apesar do sistema ser oscilatório e sem presença forças dissipativas, o método de Euler apresenta um
+  comportamento contrário ao esperado. A amplitude das oscilações aumenta com o tempo. O método pode
+  não apresentar esse comportamento se a escala de tempo utilizada for muito curta, mas para periodo
+  maiores de tempo fica aparente.
 
-#+name: grafico-oscilacoes
-#+caption: Valores de $\theta$ pelo tempo \( t \) usando método de Euler e o método de Euler-Cromer.
-#+attr_latex: :width 15cm :height 10cm :placement [!ht]
-[[./tarefa-a/tarefa-a-grafico-oscilacoes.pdf]]
+  #+name: grafico-oscilacoes
+  #+caption: Valores de $\theta$ pelo tempo \( t \) usando
+  #+caption: método de Euler e o método de Euler-Cromer.
+  #+attr_latex: :width 10cm :height 8cm :placement [!ht]
+  #+attr_latex: :float wrap :width 0.6\textwidth :placement {r}{{0.5}\textwidth}
+  [[./tarefa-a/tarefa-a-grafico-oscilacoes.pdf]]
+
+  Para entender essa instabilidade do método podemos ánalisar o comportamento da energia mecânica do
+  sistema. 
+  \[ E = \Delta K + \Delta U \]
+  \[ E = \frac{1}{2} m v^2  + mg \Delta h \]
+
+  #+begin_latex
+  \begin{equation}
+   E = \frac{1}{2} m\omega^2 l^2  + mgl \cos \theta   
+  \label{eq:energiaSistema}
+  \end{equation}
+  #+end_latex
+
+  Note que essa equação cresce pra qualquer valor de \( \theta  \) conforme \( t \) aumenta,
+  essa é a fonte da instabilidade do método de Euler. Ao contrário do método de
+  Euler-Cromer, que consegue conservar energia sob periodos inteiros de oscilação, ele
+  aumenta a energia do mais rapidamente e uma consequência disso é o aumento da amplitude
+  da oscilação a cada iteração, como está claro no gráfico ([[grafico-oscilacoes]]).
+
+  #+latex: \vskip 1cm 
+
+  Pelo gráfico das energias calculadas pelos métodos podemos ver que o método de Euler-Cromer
+  mantém uma energia constante, como esperdo para um sistema conservativo e o método de Euler não.
+  
+
+  #+name: grafico-energias
+  #+caption: Energia do sistema calculada pelo método de Euler e Euler-Cromer.
+  #+attr_latex: :width 10cm :height 8cm :placement [!h]
+  [[./tarefa-a/tarefa-a-grafico-energias.pdf]]
+
+    Por fim, o método de Euler não é um método bom para problemas desse tipo, onde queremos analisar
+    o comportamento oscilatórios. Para problemas que envolvem oscilações os método de Euler-Cromer
+    apresenta maior estabilidade.
+    
+    
+
+    
 
 
-Para entender essa instabilidade do método podemos ánalisar o comportamento da energia mecânica do
-sistema. 
-\[ E = \Delta K + \Delta U \]
-\[ E = \frac{1}{2} m v^2  + mg \Delta h \]
-Fazemos \( v = \omega l \)  e como \( \Delta U = mg(h_0 - h)\), onde \( h_0 \) é a posição mais baixa da trajetória, ou seja, a posição onde a
-altura onde \( h_0 = l \) e \( h = l \cos \theta   \), então \( \Delta U = mgl(1 - \cos \theta ) \). Segue que
+  #+latex: \clearpage
+* Tarefa B
+** B1
+  Para as condições dadas temos a seguinte relação
+  #+begin_latex
+   \begin{equation}
+   \frac{d}{dt} \omega = - \frac{g}{l} \sin \theta 
+   \label{eq:penduloSimples}
+   \end{equation}
+  #+end_latex
+  usaremos o método de Euler-Cromer para avaliar o período do movimento do pêndulo simples em função
+  de um \( \theta _0 \), sabemos que o sistema (\ref{eq:penduloSimples}) é um pêndulo simples e então
+  o esperado é que tenha um período equivalente a
+  \[ T = 2 \pi \sqrt{ \frac{l}{g}} \]
+
+  no programa implementado em fortran foi feita uma modificação em relação ao código ([[eulerCromer]]),
+  nesse algoritmo foi utilizada a noção de busca direta para realizar uma contagem de raízes da função
+  cálculada, ou seja, foi contado o número de vezes que o gráfico do movimento corta o eixo horizontal
+  e por fim feito uma média que nos dá o período de oscilação. No código abaixo temos a implementação
+  desse método
+
+
+  #+caption: Método de Euler-Cromer para o cálculo de período de oscilação do pêndulo simples.
+  #+begin_src fortran
+      count = 0
+      do i = 1, n
+
+         t = t + dt
+
+         tmp_omg = omg - sin(tt) * dt
+         tmp_tt = tt + tmp_omg * dt
+
+         if(tmp_tt * tt < 0) then
+            count = count + 1
+         end if
+
+         omg = tmp_omg
+         tt = tmp_tt
+      end do
+
+      T = (2 * t) / count
+#+end_src
+
+  O objetivo desse problema é cálcular o período de um pêndulo físico usando duas fórmulas, a primera
+  é a (\ref{eq:penduloSimples}) , implemntada no código acima, e a segunda usando a integral eliptíca (\ref{eq:integralEliptica}),
+  para isso, é necessário fazer a discretização dessa função.
+
+*** Discretização da integral eliptíca
+
+  \[ T(\theta_0) = \sqrt{ \frac{2l}{g}} \int_{- \theta _0}^{\theta _0} \frac{d \theta }{\sqrt{\cos \theta - \cos \theta _0  }}  \]
+
+Para evitar problemas que podem ocorrer quando o denominador ficar muito próximo de zero adicionamos
+uma constante \( \epsilon \) aos limites de integração, temos então
 
 #+begin_latex
 \begin{equation}
- E = \frac{1}{2} m\omega^2 l^2  + mgl (1 - \cos \theta ) 
-\label{eq:energiaSistema}
+T(\theta _0) = \sqrt{ \frac{2l}{g}} \int_{- \theta _0 + \epsilon} ^{\theta _0 + \epsilon} \frac{d
+\theta }{\sqrt{\cos \theta - \cos \theta _0 } }
+\label{eq:integralElipticaDiscretizada}
 \end{equation}
 #+end_latex
 
-Note que essa equação cresce pra qualquer valor de \( \theta  \) conforme \( t \) aumenta,
-essa é a fonte da instabilidade do método de Euler. Ao contrário do método de
-Euler-Cromer, que consegue conservar energia sob periodos inteiros de oscilação, ele
-aumenta a energia do mais rapidamente e uma consequência disso é o aumento da amplitude
-da oscilação a cada iteração, como está claro no gráfico ([[grafico-oscilacoes]]).
+podemos separar a integral em 3, e com isso encontramos podemos reduzir o cálculo dela à uma função
+analítica
 
+\[ T( \theta _0) = \underbrace{\sqrt{ \frac{2l}{g}} \int_{- \theta _0 + \epsilon} ^{ \theta _0 + \epsilon} \frac{d \theta
+}{\sqrt{\cos \theta - \cos \theta _0}}}_{\text{Numérica}} + \underbrace{ \sqrt{ \frac{2l}{g}}
+\int_{- \theta_0}^{- \theta _0 + \epsilon}\frac{d \theta }{\sqrt{\cos \theta - \cos \theta _0}} + \sqrt{ \frac{2l}{g}} \int_{\theta _0 - \epsilon}^{\theta _0} \frac{d
+\theta }{\sqrt{\cos \theta - \cos \theta _0  }}}_{\text{Analiticas}} \]
+Nesses limites de integração temos que
 
-#+name: grafico-energias
-#+caption: Energia do sistema calculada pelo método de Euler e Euler-Cromer.
-#+attr_latex: :width 12cm :height 10cm :placement [!ht]
-[[./tarefa-a/tarefa-a-grafico-energias.pdf]]
+\[ \sqrt{ \frac{2l}{g}} \int_{ - \theta _0 }^{-\theta _0 + \epsilon} \frac{d \theta }{\sqrt{\cos
+  \theta - \cos \theta _0}} =
+  \sqrt{ \frac{2l}{g}} \int_{\theta _0 - \epsilon}^{\theta _0} \frac{d
+\theta }{\sqrt{\cos \theta - \cos \theta _0  }} \]
 
+podemos então considerar apenas uma das duas integrais, fazendo
 
-#+latex:\clearpage
+\[ A = 2 \sqrt { \frac{2l}{g}} \int_{- \theta_0}^ { -\theta _0 + \epsilon } \frac{d \theta }{\sqrt{\cos \theta - \cos \theta _0} } \]
 
-Para melhor destacar esse comportamento da energia em ambos casos, foi feito o gráfico
-abaixo da energia cálculada para cada método em cada iteração.
+Resolvendo a integral temos que, \( \theta \to \theta _0 \) , com \( \theta = - \theta _0 + \varphi
+\) e \( \varphi \to 0 \), então
+\[ \cos \theta - \cos \theta _0 = cos( - \theta _0 + \varphi) - \cos \theta = \cos \theta_0
+\cos\varphi + \sin \theta_0 \sin \varphi - \cos \theta_0      \]
+\[ \cos \theta - \cos \theta _0 = \varphi  \sin \theta _0   \]
 
-Essa diferença de precisão entre os dois métodos fica ainda mais visivel para \( t \) muito grande,
-abaixo segue um gráfico mostrando o comportamento da oscilação e das energias para \( t = 500 (s) \)
-e \( n = 10^4  \) iterações.
+com essa relação podemos avaliar a integral no intervalo de integração \( [ 0, \epsilon] \), fazendo
+a mudança de variáveis temos
 
-#+name: grafico-energias-oscilacoes
-#+caption: Gráficos com oscilações e energias usando os dois métodos para \( t =  10^4 \) e \( n = 10^4 \) .
-#+attr_latex: :width 12cm :height 17cm :placement [!h]
-[[./tarefa-a/tarefa-a-grafico-energias-oscilacao.pdf]]
+\[  \int_{- \theta _0 }^{\theta _0 + \epsilon} \frac{ d \theta }{\sqrt{\cos \theta - \cos \theta _0}
+} = \int_{0}^{\epsilon} \frac{1}{\sqrt{\sin \varphi}} \frac{1}{\varphi} d\varphi\]
 
-Por fim, o método de Euler não é um método bom para problemas desse tipo, onde queremos analisar
-o comportamento oscilatório para períodos muito longos de tempo. No entanto pode ser útil para
-problemas em outras escalas. 
+\[ A = 2 \sqrt{\frac{2l}{g}} \sqrt{\frac{\epsilon}{\sin  \theta _0}} \]
 
+A fórmula final do periódo discretizado é 
 
-* Tarefa B
-Adapte o programa realizado na tarefa A para o caso abaixo, usando o
-algorı́tmo de Euler-Cromer.
-\[ \frac{d}{dt}\omega = - \frac{g}{l} \sin \theta  - \gamma \frac{d}{dt}\theta  + F_0 \sin \left( \Omega t \right),
-\frac{d}{dt} \theta  = \omega \]
+#+begin_latex
+\begin{equation}
+T( \theta _0) = \sqrt{\frac{2l}{g}} \int_{- \theta _0}^{\theta _0 + \epsilon} \frac{d \theta}{\sqrt{\cos \theta - \cos \theta _0  }}
++ 2 \sqrt{\frac{2l}{g}} \sqrt{\frac{\epsilon}{\sin  \theta _0}} 
+\label{eq:formulaFinalPeriodo}
+\end{equation}
+#+end_latex
 
+*** Método de Boole
+
+    Com o ferramental adquirido no projeto anterior podemos utilizar um método de integração (nesse
+    caso o método de Boole foi o escolhido) para avaliar a integral eliptíca
+    (\ref{eq:integralEliptica}), este é dado pela seguinte relação
+
+    #+begin_latex
+    \begin{equation}
+      \int_{a}^{b} f(x) dx = \frac{2h}{45}  \left( 7 f(x) + 32 f(x + h) + 12 f(x + 2h) + 32f(x + 3h) + f(x+4h) \right) ,
+      h =  \frac{b - a}{N}
+    \label{eq:metodoBoole}
+    \end{equation}
+    #+end_latex
+    onde \( N \) é o número de iterações utilizadas para o cálculo da integral.
+  
+  
+    Ajustando a discretização da (\ref{eq:integralElipticaDiscretizada}) para usar o método de boole
+    temos que \( h = \frac{b - a}{N} \), onde \( [a,b] \)  é o intervalo de integração \( [a,b] =
+  [\theta _0  + \epsilon, - \theta _0 + \epsilon] \), segue que
+    \( h = \frac{2 \theta _0}{N} \). Sabemos pelo projeto anterior sobre *Cálculo Numérico* que o método
+    de Boole pode apresentar melhor precisação para \( h \) na ordem de \( 10^{-5} \), portanto essa
+    será a ordem usada nessa implementação. 
+*** Código da implementação do método de Boole
+  #+name: metodoBoole
+  #+caption: Calculo da integral usando método de Boole
+  #+begin_src fortran -n 18 :exports code
+!        Metodo de Boole
+         h = (2 * tt0)/n
+         do i = 0, (n/4) - 1
+            
+            tt = - tt0 + 2*i*h + e
+            
+            f0 = f(tt, tt0) 
+            f1 = f(tt + h, tt0)
+            f2 = f(tt + 2*h, tt0)
+            f3 = f(tt + 3*h, tt0) 
+            f4 = f(tt + 4*h, tt0)
+            
+            sum = sum + (7*f0+32*f1+12*f2+32*f3+7*f4)
+         end do
+
+         sum = sum*(2*h/45)
+         sum = sqrt(2d0) * sum + 2 * sqrt(2d0) * sqrt(e/sin(tt0))
+  #+end_src
+  #+caption: Função da integral.
+  #+begin_src fortran -n 35 :exports code
+      function f(tt, tt0)
+      implicit real * 8 (a-h, o-z)
+      pi = acos(-1.d0)
+      f = 1.0d0 / sqrt(cos(tt) - cos(tt0))  
+      return
+      end
+  #+end_src
+  #+latex:\clearpage
+** Resultados *B1* e *B2*
+  Os métodos implementados fornecem as seguintes aproximações para alguns ângulos iniciais:
+  #+begin_latex
+\begin{table}[htb!]
+\centering
+\caption{Cálculo do período de oscilação para um ângulo \( \theta _0 \) inicial utilizando aproximações numéricas. }
+\begin{tabular}{|c|c|c|}
+\hline
+$\theta_0$  & \begin{tabular}[c]{@{}c@{}}Aproximação pelo método\\ Euler-Cromer\end{tabular} & Integral Eliptica  \\ \hline
+$ 7 \pi/18$ & 6.9444444444455478                                                             & 6.9470463343391113 \\ \hline
+$ \pi/3$    & 6.7567567567578299                                                             & 6.7566483723506163 \\ \hline
+$ \pi/2$    & 7.4074074074085843                                                             & 7.4566305768269627 \\ \hline
+$5\pi/6$    & 11.111111111112876                                                             & 11.217766346528297 \\ \hline
+\end{tabular}
+\end{table}
+  #+end_latex
+
+  Para valores iniciais de \( \theta _0 \to 0 \), nota-se que o ângulo inicial é irrelevante na
+  determinação do período, foram feitas aproximações afim de demonstrar que para \( \theta _0 \)
+  pequenos o período é dado por
+  #+begin_latex
+  \begin{equation}
+   T \approx 2 \pi \sqrt{\frac{l}{g}}   \left( 1 + \frac{\theta _0^2}{16} \right)
+   \label{eq:aproxPeriodo}
+  \end{equation}
+  #+end_latex
+  
+  #+begin_latex
+\begin{table}[htb!]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+$\theta_0$ & \begin{tabular}[c]{@{}c@{}}Aproximação pelo método \\ de Euler-Cromer\end{tabular} & Integral Eliptíca  & Forma analítica    \\ \hline
+$\pi / 12$ & 6.3291139240516383                                                                 & 6.3149738926809489 & 6.3101004779090131 \\ \hline
+$\pi/24$   & 6.2893081761016276                                                                 & 6.2715816787230629 & 6.2899140998619432 \\ \hline
+$\pi/48$   & 6.2893081761016276                                                                 & 6.2508046777271904 & 6.2848675053501752 \\ \hline
+$\pi/96$   & 6.2893081761016276                                                                 & 6.2390644294801740 & 6.2836058567222342 \\ \hline
+\end{tabular}
+\end{table}
+  #+end_latex
+
+  Como esperado o comportamento do período para ângulos iniciais pequenos pode ser aproximado pela
+  (\ref{eq:aproxPeriodo}) e nas simulações feitas obtive até a aproximação para um erro de até \(
+  10^{-2}\).
+** *B3*
+  Sabemos que a fórmula geral da oscilação de um do pêndulo simples é dada por
+
+  #+begin_latex
+  \begin{equation}
+   \frac{d \omega}{dt} = - \frac{g}{l} \sin \theta  - \gamma \frac{d \theta }{dt}  + F_o \sin (\Omega t)
+   \label{eq:formulaGeralPendulo}
+  \end{equation}
+  #+end_latex
+
+  até agora foram realizadas simulações considerando o sistema não dissipativo,
+  nessa tarefa vamos implementar o cálculo para o caso de  \( \gamma = 1/2 \) afim de analizar o
+  comportamento do sistema com forças dissipativas atuando nele.
+
+  O \( \gamma  \) é chamado fator de amortecimento e determina o quão abrupta será a diminuição do
+  movimento, é esperado que um sistema desse tipo, com \( \gamma = \frac{1}{2} \) apresente amortecimento
+  sub-critíco.
+
+  #+latex:\clearpage
+*** Código em Fortran
+  O código para realizar essa simulação é apenas uma alteração do método de Euler-Cromer
+  com adição dos novos valores utilizados.
+  #+name: codigoGamma
+  #+caption: Rotina que realiza o cálculo com \( \gamma = \frac{1}{2} \) 
+  #+begin_src fortran :exports code
+      tt = 7 * pi / 18 
+       do i = 1, n
+
+       t = t + dt
+
+       tmp_omg = omg - sin(tt) * dt - gamma*omg*dt
+       tmp_tt = tt + tmp_omg * dt
+
+       omg = tmp_omg
+       tt = tmp_tt
+       write(10, *) t, tmp_tt
+    end do
+  #+end_src
+
+  A partir dos resultados desse programa foi gerado o gráfico ([[graficoB3]]) , que constata o que
+  esperavamos, que o comportamento das oscilações para o \( \gamma  \) escolhido é subcritíco. 
+
+  #+name: graficoB3
+  #+caption: Gráfico de \( \theta \times t\) com \( \gamma  = \frac{1}{2} \) 
+  #+attr_latex: :width 10cm :height 8cm :placement [!h]
+  [[./tarefa-b/tarefa-b3-grafico-oscilacoes.pdf]]
+  
+  
+  #+latex:\clearpage
+
+** *B4*
 
 * Tarefa C
 * Tarefa D
@@ -230,22 +498,3 @@ _0}} d \theta  \]
 \label{eq:integralEliptica}
 \end{equation}
 #+end_latex
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

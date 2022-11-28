@@ -1,7 +1,7 @@
       implicit real * 8 (a-h, o-z)
 
       parameter(n = 1000)
-      parameter(tt = 100)
+      parameter(tt = 50)
       parameter(pi = acos(-1.0d0))
 
 !     Gravidade
@@ -10,9 +10,10 @@
       parameter(s = 9.8d0)
 !     p/s = 1.0d0
 
-      dt = (tt * 1.0d0) / (n * 1.0d0)
+      dt = (tt*1.0d0) / (n*1.0d0)
 
       tt1 = (2 * pi) / 48d0
+
       omg1 = 0.0d0
       e1 = - p * cos(tt1)
 
