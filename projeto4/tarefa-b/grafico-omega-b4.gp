@@ -7,7 +7,6 @@ set ylabel "$\\omega$"
 
 set grid
 
-
 set style line 1 lc rgb "red" lw 3
 set style line 2 lc rgb "blue" lw 3
 set style line 3 lc rgb "black" lw 3

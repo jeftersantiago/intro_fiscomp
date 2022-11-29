@@ -1,10 +1,11 @@
 set terminal epslatex standalone size 12cm, 10cm
 set output "tarefa-b4-grafico-theta.tex"
-reset 
 
 set xlabel "Tempo (s)"
 set ylabel "$\\theta$ (radianos)"
 
+
+set grid
 
 
 # set size sq

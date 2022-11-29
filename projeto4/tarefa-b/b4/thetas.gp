@@ -7,6 +7,9 @@ set style line 2 lc rgb "red"   lw 2
 set style line 3 lc rgb "green" lw 2
 set style line 4 lc rgb "blue"  lw 2
 
+
+set grid 
+
 plot "theta1.dat" with lines ls 1 title "$\\theta_1$",\
      "theta2.dat" with lines ls 2 title "$\\theta_2$",\
      "theta3.dat" with lines ls 3 title "$\\theta_3$",\

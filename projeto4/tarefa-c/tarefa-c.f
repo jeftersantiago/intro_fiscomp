@@ -1,6 +1,6 @@
       implicit real * 8 (a-h, o-z)
-      parameter(n = 3000)
-      parameter(t_total = 100)
+      parameter(n = 1000)
+      parameter(t_total = 70)
 
       parameter(pi = acos(-1.0d0))
 
@@ -19,7 +19,7 @@
       tt2 = 7 * pi / 18
       tt1 = tt2 - 0.01
 
-      print *, tt2 - tt1
+      ! print *, tt2 - tt1
 
       omg1 = 0.0d0
       omg2 = omg
@@ -28,13 +28,13 @@
          
          t = t + dt
          
-         tmp_omg1 = omg1 - sin(tt1)*dt-gamma*omg1*dt+f01*sin(OM*t)*dt
+         tmp_omg1 = omg1 - sin(tt1)*dt-gamma*omg1*dt+f02*sin(OM*t)*dt
          tmp_tt1 = tt1 + tmp_omg1*dt
 
          tmp_omg2 = omg2 - sin(tt2)*dt-gamma*omg2*dt+f02*sin(OM*t)*dt
          tmp_tt2 = tt2 + tmp_omg2*dt
-
-         write(10, *) t, tt2 - tt1
+         
+         write(10, *) t, log(abs(tt2 - tt1))
          
          omg1 = tmp_omg1
          tt1 = tmp_tt1

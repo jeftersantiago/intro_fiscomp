@@ -1,7 +1,8 @@
 set terminal epslatex standalone size 12cm, 10cm
 set output "tarefa-b3-grafico-oscilacoes.tex"
-# reset 
+# reset
 
+set grid
 set xlabel "Tempo (s)"
 set ylabel "$\\theta$ (radianos)"
 
