@@ -12,13 +12,12 @@
 
       open(10, file="saida-tarefa-b4-theta.dat")
       open(11, file="saida-tarefa-b4-omega.dat")
-      open(12, file="saida-tarefa-b4-freq.dat")
 
-      dt = t_total / n 
+      dt =  t_total / n 
+      print *, dt
  
       t = 0d0
-
-      tt = 19 * pi / 21
+      tt = 7 * pi / 18
       tt1 = tt 
       tt2 = tt
 
@@ -29,8 +28,9 @@
       count = 0
       count1 = 0
       count2 = 0
+
       do i = 1, n
-         
+        
          t = t + dt
          
          tmp_omg = omg - sin(tt)*dt-gamma*omg*dt
@@ -42,7 +42,9 @@
          tmp_omg2 = omg2 - sin(tt2)*dt-gamma*omg2*dt+f02*sin(OM*t)*dt
          tmp_tt2 = tt2 + tmp_omg2*dt
 
-         write(10, *) t, tmp_tt, tmp_tt1,tmp_tt2
+         write(10,*) t, mod(tmp_tt+100*pi,-2*pi), 
+     +        mod(tmp_tt1+100*pi,-2*pi), mod(tmp_tt2+100*pi,-2*pi)
+
          write(11, *) t, tmp_omg, tmp_omg1, tmp_omg2
 
          if(tmp_tt * tt < 0) then

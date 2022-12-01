@@ -23,6 +23,7 @@
          omg = tmp_omg
          tt = tmp_tt
          write(10, *) t, tmp_tt
+
       end do
       close(10)
       end

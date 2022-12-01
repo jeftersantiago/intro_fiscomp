@@ -1,17 +1,14 @@
       implicit real * 8 (a-h, o-z)
-      parameter(n = 10000)
-      parameter(t_total = 500)
-
-      parameter(s = 9.8d0)
-      parameter(p = 9.9d0)
+      parameter(n = 3000)
+      parameter(t_total = 1000)
 
       parameter(pi = acos(-1.0d0))
 
       parameter(n_thetas = 4)
-!      parameter(e = 0.1d-5)
-      parameter(e = 0.3d-6)
+      parameter(e = 0.1d-5)
 
       dt = t_total/n
+!     print *, dt
 
       open(10, file="saida-tarefa-b.dat")
       open(11, file="entrada-tarefa-b2.dat")
@@ -37,6 +34,7 @@
 
             omg = tmp_omg
             tt = tmp_tt
+
          end do
          T = (2 * t) / count
          
@@ -57,10 +55,10 @@
 
          sum = sum*(2*h/45)
          sum = sqrt(2d0) * sum + 2 * sqrt(2d0) * sqrt(e/sin(tt0))
-
-!         analitico = 2 * pi * (1 + tt0**2/16)
-         print *, tt0, T, sum !, analitico
-         write(10, *) tt0, T, sum!, analitico
+         
+         analitico = 2 * pi * (1 + tt0**2/16)
+         print *, tt0, T, sum, analitico
+         write(10, *) tt0, T, sum, analitico
       end do
 
       close(10)

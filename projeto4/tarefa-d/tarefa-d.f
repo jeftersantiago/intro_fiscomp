@@ -16,14 +16,14 @@
  
       t = 0d0
 
-      tt = pi / 6
+      tt = pi / 6 + 0.03 
       omg = 0.0d0
 
       do i = 1, n
          
          t = t + dt
          
-         tmp_omg = omg - sin(tt)*dt-gamma*omg*dt+f01*sin(OM*t)*dt
+         tmp_omg = omg - sin(tt)*dt-gamma*omg*dt+f02*sin(OM*t)*dt
          tmp_tt = tt + tmp_omg*dt
 
          write(10, *) tmp_omg, tmp_tt

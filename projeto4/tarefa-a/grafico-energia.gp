@@ -1,5 +1,5 @@
-set terminal epslatex standalone size 15cm, 10cm
-set output "tarefa-a-grafico-energias.tex"
+# set terminal epslatex standalone size 15cm, 10cm
+# set output "tarefa-a-grafico-energias.tex"
 
 set xlabel "Tempo (s)"
 set ylabel "Energia"

@@ -1,6 +1,5 @@
 #+include:  ./header.org
 #+startup: latexpreview
-
 * Tarefa A
 O objetivo dessa tarefa é implementar o método de Euler e o método de Euler-Cromer para
 discretização do sistema do pêndulo simples. Primeiramente vamos analisar as equações diferenciais que descrevem
@@ -181,7 +180,7 @@ o método de Euler-Cromer é uma variação do anterior, é representado pelas e
   #+latex: \vskip 1cm 
 
   Pelo gráfico das energias calculadas pelos métodos podemos ver que o método de Euler-Cromer
-  mantém uma energia constante, como esperdo para um sistema conservativo e o método de Euler não.
+  mantém uma energia constante, como esperado para um sistema conservativo e o método de Euler não.
   
 
   #+name: grafico-energias
@@ -242,7 +241,7 @@ o método de Euler-Cromer é uma variação do anterior, é representado pelas e
 #+end_src
 
   O objetivo desse problema é cálcular o período de um pêndulo físico usando duas fórmulas, a primera
-  é a (\ref{eq:penduloSimples}) , implemntada no código acima, e a segunda usando a integral eliptíca (\ref{eq:integralEliptica}),
+  é a (\ref{eq:penduloSimples}) , implementada no código acima, e a segunda usando a integral eliptíca (\ref{eq:integralEliptica}),
   para isso, é necessário fazer a discretização dessa função.
 
 *** Discretização da integral eliptíca
@@ -292,8 +291,7 @@ a mudança de variáveis temos
 
 \[ A = 2 \sqrt{\frac{2l}{g}} \sqrt{\frac{\epsilon}{\sin  \theta _0}} \]
 
-A fórmula final do periódo discretizado é 
-
+A função do período em \( \theta _0 \) é dada por 
 #+begin_latex
 \begin{equation}
 T( \theta _0) = \sqrt{\frac{2l}{g}} \int_{- \theta _0}^{\theta _0 + \epsilon} \frac{d \theta}{\sqrt{\cos \theta - \cos \theta _0  }}
@@ -356,7 +354,7 @@ T( \theta _0) = \sqrt{\frac{2l}{g}} \int_{- \theta _0}^{\theta _0 + \epsilon} \f
       end
   #+end_src
   #+latex:\clearpage
-** Resultados *B1* e *B2*
+** Resultados B1 e B2
   Os métodos implementados fornecem as seguintes aproximações para alguns ângulos iniciais:
   #+begin_latex
 \begin{table}[htb!]
@@ -413,7 +411,7 @@ $\pi/96$   & 6.2893081761016276                                                 
   #+end_latex
 
   até agora foram realizadas simulações considerando o sistema não dissipativo,
-  nessa tarefa vamos implementar o cálculo para o caso de  \( \gamma = 1/2 \) afim de analizar o
+  nessa tarefa foi implementado o cálculo para o caso com  \( \gamma = 1/2 \) para analizar o
   comportamento do sistema com forças dissipativas atuando nele.
 
   O \( \gamma  \) é chamado fator de amortecimento e determina o quão abrupta será a diminuição do
@@ -450,16 +448,69 @@ $\pi/96$   & 6.2893081761016276                                                 
   [[./tarefa-b/b3/tarefa-b3-grafico-oscilacoes.pdf]]
   #+latex:\clearpage
 ** *B4*
+  
+  Dando continuidade à tarefa anterior, nesse tópico foi o objetivo é fazer simulações
+  para o sistema com dissipações e com oscilações forçadas por forças de intensidades diferentes.
+  Para o sistema no caso onde \( \gamma  = \frac{1}{2} \), \( \Omega = \frac{3}{2} \) com \(
+\Delta t = 0.03 \) para \( F_0 = 0, F_0 = \frac{1}{2} \text{ e } F_0 = \frac{6}{5} \) foi usada a
+  equação (\ref{eq:formulaGeralPendulo}) para criar os gráficos conjuntos de para o \( \theta  \) e \( \omega \) em função do tempo.
+  
+  
+  #+caption: Código do cálculo dos \( \theta  \) , \( \omega \) e períodos de oscilação do pêndulo.
+  #+begin_src fortran :exports code
+      do i = 1, n
+        
+         t = t + dt
+         
+         tmp_omg = omg - sin(tt)*dt-gamma*omg*dt
+         tmp_tt = tt + tmp_omg*dt 
 
-  Analisando o sistema para o caso onde \( \gamma  = \frac{1}{2} \), \( \Omega = \frac{3}{2} \)com \(
-\Delta t = 0.03 \) para \( F_0 = 0, F_0 = \frac{1}{2} \text{ e } F_0 = \frac{6}{5} \) temos os
-  gráficos conjuntos de para o \( \theta  \) e \( \omega \) em função do tempo.
+         tmp_omg1 = omg1 - sin(tt1)*dt-gamma*omg1*dt+f01*sin(OM*t)*dt
+         tmp_tt1 = tt1 + tmp_omg1*dt
 
-  #+attr_latex: :width 10cm :height 8cm :placement [!h]
-  [[./tarefa-b/b4/tarefa-b4-grafico-omega.pdf]]
+         tmp_omg2 = omg2 - sin(tt2)*dt-gamma*omg2*dt+f02*sin(OM*t)*dt
+         tmp_tt2 = tt2 + tmp_omg2*dt
 
-  #+attr_latex: :width 10cm :height 8cm :placement [!h]
-  [[./tarefa-b/b4/tarefa-b4-grafico-theta.pdf]]
+         write(10,*) t, mod(tmp_tt+100*pi,-2*pi), 
+     +        mod(tmp_tt1+100*pi,-2*pi), mod(tmp_tt2+100*pi,-2*pi)
+
+         write(11, *) t, tmp_omg, tmp_omg1, tmp_omg2
+
+         if(tmp_tt * tt < 0) then
+            count = count + 1
+         end if
+         if(tmp_tt2 * tt1 < 0) then
+            count1 = count1+ 1
+         end if
+         if(tmp_tt2 * tt2 < 0) then
+            count2 = count2 + 1
+         end if
+         
+         omg = tmp_omg
+         tt = tmp_tt
+
+         omg1 = tmp_omg1
+         tt1 = tmp_tt1
+
+         omg2 = tmp_omg2
+         tt2 = tmp_tt2
+
+      end do
+
+      T = (2*t)/count
+      T1 = (2*t)/count1
+      T2 = (2*t)/count2
+
+      write(*, *) T, T1, T2
+  #+end_src
+
+  Os valores iniciais das variáveis presentes no código acima são semelhentes às do [[codigoGamma]],
+  além deles as variáveis =count=, =count1= e =count2= usadas para o cálculo do período são inicializadas
+  em zero.
+
+
+   #+attr_latex: :width 18cm :height 10cm :placement [!h]
+  [[./tarefa-b/b4/tarefa-b4-grafico.pdf]]
   
   A aproximação numérica para a frequência do caso onde \( F_0 = 0 \) nós dá \( f =
   6.4516129032256053 \), esse é o caso
@@ -476,16 +527,110 @@ $\pi/96$   & 6.2893081761016276                                                 
   iniciais e que valores minimamente diferentes podem fazer com que o sistema evolua de formas
   muito diferentes. O gráfico ([[graficob4]]) ilustra bem esse fenômeno.
 
+
   #+name: graficob4
   #+caption: Gráfico de \( \theta \times t \) para diferentes \( \theta_s  \) com \( \gamma = \frac{1}{2}, \Omega = \frac{2}{3}  \)  e \( F_0 = \frac{6}{5} \) .
   #+attr_latex: :width 10cm :height 8cm :placement [!h]
-   [[./tarefa-b/b4/tarefa-b4-grafico-thetas.pdf]]
+  [[./tarefa-b/b4/tarefa-b4-grafico-thetas.pdf]]
+
+
+
 
   Por causa desse comportamento do gráfico não é possível cálcular a frequência já que o sistema não
   é periódioco durante toda sua evolução temporal.
-#+latex:\clearpage
+
+  #+latex:\clearpage
+
 * Tarefa C
+
+  Afim de analisar mais profundamente o emergência de caos podemos modelar o sistema com dois
+  pêndulos, com \( \theta _0  \) iniciais próximos tal que \( \Delta \theta = 10^{-3} \), com o
+  expoente de Liapunov conseguimos calcular a taxa de separação entre as trajetórias tomadas
+  pelos dois pêndulos, dizemos que, para uma trajetória cujos \( \theta  \) se separam
+  exponencialmente, o sistema é caótico. Abaixo está a expressão para o expoente de Liapunov
+
+  #+begin_latex
+  \begin{equation}
+  \Delta \theta (t) \approx e^{\lambda t} = 
+  \begin{cases}
+   \lambda  < 0 \Rightarrow \text{ sistema não caótico },\\
+   \lambda > 0 \Rightarrow \text{sistema caótico}   
+\end{cases}
+  \label{eq:liapunov}  
+  \end{equation}
+  #+end_latex
+
+  como queremos estimaro  valor de \( \lambda  \), tomamos o logaritmo neperiano da relação e com
+  isso obtemos uma relação linear, onde \( \lambda  \) é o coeficiente angular da reta
+
+  #+begin_latex
+  \begin{equation}
+   \ln(|\Delta \theta (t)|) = \lambda t  
+  \label{eq:liapunovFinal}
+  \end{equation}
+  #+end_latex
+
+  As únicas alterações necessárias para realização dessa simulação em relação às anteriores são os
+  valores de saída e a realização da subtração do ângulo dos dois pêndulos, as modificações estão
+  no código abaixo:
+
+  #+caption: Código para execução da simulação .
+  #+begin_src fortran :exports code
+    f = 0.5d0 ! 1.2d0 
+    do i = 1, n
+
+       t = t + dt
+
+       tmp_omg1 = omg1 - sin(tt1)*dt-gamma*omg1*dt+f*sin(OM*t)*dt
+       tmp_tt1 = tt1 + tmp_omg1*dt
+
+       tmp_omg2 = omg2 - sin(tt2)*dt-gamma*omg2*dt+f*sin(OM*t)*dt
+       tmp_tt2 = tt2 + tmp_omg2*dt
+
+       write(10, *) t, log(abs(tt2 - tt1))
+
+       omg1 = tmp_omg1
+       tt1 = tmp_tt1
+
+       omg2 = tmp_omg2
+       tt2 = tmp_tt2
+
+    end do
+  #+end_src
+  
+  #+latex: \clearpage
+  O experimento é realizado para um valor incial arbritário igual \( \theta = 7 \pi / 18 \), onde \(  \Delta \theta = 0.001 \) 
+  e partir dos valores coletados foi possível construir os gráficos abaixo, que foram usados nas
+  analises à cerca do *coeficiente de Liapunov* e o comportamento deterministico ou não do sistema.
+  
+  Fazendo o ajuste linear utilizando foi obtido os valores aproximados para \( \lambda  \),
+  para o caso onde \( F_0 = 1/2 \) temos \( \lambda =  -0.254 \pm 0.001  \)
+  e para \( F_0 = 6/5 \), \( \lambda = 0.131 \pm 0.001 \). O valor de \( \lambda  \) foi estimado
+  usando o graficador =GNUPLOT=. 
+
+  A partir desses valores cálculados para \( \lambda \) para ambas forças iniciais, podemos dizer
+  que, para o caso onde \( F_0 = 6/5 \) o sistema possui comportamento caótico, pois seu \( \lambda
+  > 0 \).
+  Com isso temos uma comprovação para o resultado obtido anteriormente, quando foi tentei
+  calcular o periódo de oscilação do sistema com essa mesma \( F_0 \).
+
+  #+name: graficosC
+  #+caption: Gráficos \( \Delta (\theta ) \times t \) em escala semi-logaritmíca, com \( F_0 = 1/2 \) e \( F_0 = 6/5 \), respectivamente. 
+  #+attr_latex: :width 12cm :height 13cm :placement [!t]
+  [[./tarefa-c/tarefa-c-grafico.pdf]]
+ 
+  Além disso, fica claro pelo gráfico ([[graficosC]]) que o crescimento da constante de Liapunov é
+  exponencial, ou seja, para o caso do sistema caótico as trajetórias se afastam também
+  exponencialmente, então o comportamento do sistema não pode ser previsto.
+  #+latex: \clearpage
 * Tarefa D
+  Continuando com o sistema 
+  #+caption: Gráficos de \( \omega(\theta) \times \theta \) para \( F_0 = 1/2 \)  e \( F_0 = 6/5 \).
+  #+caption: À esquerda gráficos para \( F_0 = 1/2 \) com \( \theta _0 = \pi/6, \pi/6 + 0.03, \pi/6 - 0.03 \), respectivamente.
+  #+caption: Á direita gráficos com \( F_0 = 6/5 \) com \( \theta _0 = \pi/6, \pi/6 + 0.03, \pi/6 - 0.03 \), respectivamente.
+  #+attr_latex: :width 15cm :height 19cm :placement [!h]
+  [[./tarefa-d/tarefa-d-grafico.pdf]]
+  #+latex: \clearpage 
 * Tarefa E
 #+latex: \clearpage
 #+latex: \appendix
@@ -529,3 +674,19 @@ _0}} d \theta  \]
 \label{eq:integralEliptica}
 \end{equation}
 #+end_latex
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
