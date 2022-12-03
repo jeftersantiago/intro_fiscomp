@@ -11,6 +11,7 @@
 !     print *, dt
 
       open(10, file="saida-tarefa-b.dat")
+!     Valores de theta usados
       open(11, file="entrada-tarefa-b2.dat")
 
       do k = 1, n_thetas

@@ -1,0 +1,913 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt">
+<head>
+<!-- 2022-12-02 Fri 11:48 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>*\Huge{Projeto 04}*</title>
+<meta name="author" content="*\Lage{Jefter Santiago Mares}* @@latex:\\@@ n$^{\circ}$ USP:12559016" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title"><b>\Huge{Projeto 04}</b>
+<br />
+<span class="subtitle">\huge{Movimento oscilatório}</span>
+</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org503b4bc">1. Tarefa A</a></li>
+<li><a href="#orgfd4607d">2. Tarefa B</a></li>
+<li><a href="#org8e322c3">3. Tarefa C</a></li>
+<li><a href="#org5a2c910">4. Tarefa D</a></li>
+<li><a href="#org054ba1a">5. Tarefa E</a></li>
+<li><a href="#org3ce5bea">6. Demonstração da integral eliptíca</a></li>
+</ul>
+</div>
+</div>
+<div class="latex" id="orgeb36f3b">
+\begin{figure}[t!]
+    \includegraphics[height=0.2\textwidth]{~/Workspace/intro_fiscomp/.template/ifsc-logo.jpg}
+\end{figure}
+
+</div>
+
+<p>
+São Carlos
+</p>
+
+<p>
+2021
+</p>
+<div id="outline-container-org503b4bc" class="outline-2">
+<h2 id="org503b4bc"><span class="section-number-2">1.</span> Tarefa A</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+O objetivo dessa tarefa é implementar o método de Euler e o método de Euler-Cromer para
+discretização do sistema do pêndulo simples. Primeiramente vamos analisar as equações diferenciais que descrevem
+o sistema.
+</p>
+
+<p>
+A força atuando no sistema pode ser escrita como \( m a_{\theta } = m l \frac{d^2 }{dt²} \theta  = -g m
+\sin \theta   \) e podemos
+aproximar o seno fazendo uma expansão de Taylor, temos então 
+\[ \sin \theta = \sum_{n = 0}^{\infty} (-1)^n  \frac{\theta ^  {2n+1}}{(2n+1)!} = \theta - \frac{1}{3!}\theta ^3 +
+\frac{1}{5!}\theta ^5 + \cdots  \]
+para \( \theta  \to 0 \Rightarrow  \sin \theta  \approx \theta  \), segue que
+</p>
+<div class="latex" id="org2ab07dd">
+\begin{equation}
+\frac{d^2}{dt²} \theta  \approx - \frac{g}{l} \theta 
+\label{eq:edo1}
+\end{equation}
+
+</div>
+
+<p>
+a (\ref{eq:edo1}) é uma EDO linear e pode ser representada por um sistema de equação diferenciais
+acopladas
+</p>
+
+<div class="latex" id="org28fa04d">
+\begin{equation}
+\frac{d^2}{dt^2} \theta  = \begin{cases}
+    \omega = \frac{d}{dt} \theta  \\
+   \frac{d}{dt} \omega = - \frac{g}{l} \theta   
+\end{cases}
+\end{equation}
+<p>
+\label{eq:edo2}
+</p>
+
+</div>
+
+<p>
+discretizando as (\ref{eq:edo2}) temos o método de Euler
+</p>
+
+<div class="latex" id="org3111196">
+\begin{equation}
+\omega_{i + 1} = \omega_i  - \left( \frac{g}{l} \right) \theta _i \Delta t 
+\label{eq:omegaEuler}
+\end{equation}
+\begin{equation}
+\theta _{i + 1} = \theta _i + \omega_i \Delta t
+\label{eq:thetaEuler}
+\end{equation}
+
+</div>
+
+<p>
+o método de Euler-Cromer é uma variação do anterior, é representado pelas equações abaixo
+</p>
+
+<div class="latex" id="org38ff1e4">
+\begin{equation}
+\omega_{i + 1} = \omega_i - \left( \frac{g}{l} \right) \theta _i \Delta t
+\label{eq:omegaEulerCromer}
+\end{equation}
+\begin{equation}
+\theta _{i + 1} = \theta _i + \omega_i \Delta t
+\label{eq:thetaEulerCromer}
+\end{equation}
+
+</div>
+</div>
+<div id="outline-container-org2565694" class="outline-3">
+<h3 id="org2565694">Código em Fortran</h3>
+<div class="outline-text-3" id="text-org2565694">
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 1: </span>Declaração das variáveis utilizadas.</label><pre class="src src-fortran">      <span style="color: #ba2f59; font-weight: bold;">implicit real</span> * 8 <span style="color: #3a81c3;">(</span>a-h, o-z<span style="color: #3a81c3;">)</span>
+
+      <span style="color: #ba2f59; font-weight: bold;">parameter</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">n</span> = 10000<span style="color: #3a81c3;">)</span>
+      <span style="color: #ba2f59; font-weight: bold;">parameter</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">tt</span> = 100<span style="color: #3a81c3;">)</span>
+      <span style="color: #ba2f59; font-weight: bold;">parameter</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">pi</span> = <span style="color: #3a81c3;">acos</span><span style="color: #6c3163;">(</span>-1.0d0<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">!     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Gravidade</span>
+      <span style="color: #ba2f59; font-weight: bold;">parameter</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">p</span> = 9.8d0<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">!     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Comprimento</span>
+      <span style="color: #ba2f59; font-weight: bold;">parameter</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">s</span> = 9.8d0<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">!     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">p/s = 1.0d0</span>
+
+      dt = <span style="color: #3a81c3;">(</span>tt * 1.0d0<span style="color: #3a81c3;">)</span> / <span style="color: #3a81c3;">(</span>n * 1.0d0<span style="color: #3a81c3;">)</span>
+
+      tt1 = <span style="color: #3a81c3;">(</span>2 * pi<span style="color: #3a81c3;">)</span> / 48d0
+      omg1 = 0.0d0
+      e1 = - p * <span style="color: #3a81c3;">cos</span><span style="color: #3a81c3;">(</span>tt1<span style="color: #3a81c3;">)</span>
+
+      tt2 = tt1 
+      omg2 = omg1
+      e2 = e1
+
+      <span style="color: #3a81c3; font-weight: bold;">open</span><span style="color: #3a81c3;">(</span>10, file=<span style="color: #2d9574;">"data-oscilacoes.dat"</span><span style="color: #3a81c3;">)</span>
+      <span style="color: #3a81c3; font-weight: bold;">open</span><span style="color: #3a81c3;">(</span>11, file=<span style="color: #2d9574;">"data-energias.dat"</span><span style="color: #3a81c3;">)</span>
+
+
+            <span style="color: #ba2f59; font-weight: bold;">implicit real</span> * 8 <span style="color: #3a81c3;">(</span>a-h, o-z<span style="color: #3a81c3;">)</span>
+
+            <span style="color: #ba2f59; font-weight: bold;">parameter</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">n</span> = 1000<span style="color: #3a81c3;">)</span>
+            <span style="color: #ba2f59; font-weight: bold;">parameter</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">tt</span> = 50<span style="color: #3a81c3;">)</span>
+            <span style="color: #ba2f59; font-weight: bold;">parameter</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">pi</span> = <span style="color: #3a81c3;">acos</span><span style="color: #6c3163;">(</span>-1.0d0<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+  <span style="color: #2aa1ae; background-color: #ecf3ec;">!         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Gravidade</span>
+            <span style="color: #ba2f59; font-weight: bold;">parameter</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">p</span> = 9.8d0<span style="color: #3a81c3;">)</span>
+  <span style="color: #2aa1ae; background-color: #ecf3ec;">!         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Comprimento</span>
+            <span style="color: #ba2f59; font-weight: bold;">parameter</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">s</span> = 9.8d0<span style="color: #3a81c3;">)</span>
+            dt = <span style="color: #3a81c3;">(</span>tt * 1.0d0<span style="color: #3a81c3;">)</span> / <span style="color: #3a81c3;">(</span>n * 1.0d0<span style="color: #3a81c3;">)</span>
+
+            tt1 = <span style="color: #3a81c3;">(</span>2 * pi<span style="color: #3a81c3;">)</span> / 48d0
+            omg1 = 0.0d0
+            e1 = <span style="color: #3a81c3;">(</span>1.0d0/2.0d0<span style="color: #3a81c3;">)</span>*s**2
+
+            tt2 = tt1 
+            omg2 = omg1
+            e2 = e1
+
+            <span style="color: #3a81c3; font-weight: bold;">open</span><span style="color: #3a81c3;">(</span>10, file=<span style="color: #2d9574;">"data-oscilacoes.dat"</span><span style="color: #3a81c3;">)</span>
+            <span style="color: #3a81c3; font-weight: bold;">open</span><span style="color: #3a81c3;">(</span>11, file=<span style="color: #2d9574;">"data-energias.dat"</span><span style="color: #3a81c3;">)</span>
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 2: </span>Estrutura dos cálculos e impressão nos arquivos <code>saida-oscilacoes.dat</code> e <code>saida-energias.dat</code></label><pre class="src src-fortran" id="orgd2ffb8b">      <span style="color: #3a81c3; font-weight: bold;">do</span> i = 1, n
+
+         t = t + dt
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">!     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Metodo de Euler</span>
+         tmp_omg1 = omg1 - tt1 * dt
+         tmp_tt1 = tt1 + omg1 * dt
+
+         omg1 = tmp_omg1
+         tt1 = tmp_tt1
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">!     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Metodo de Euler-Cromer</span>
+         tmp_omg2 = omg2 - tt2 * dt
+         tmp_tt2 = tt2 + tmp_omg2 * dt
+
+         omg2 = tmp_omg2
+         tt2 = tmp_tt2
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">!     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Energia do sistema</span>
+         e1 = <span style="color: #3a81c3;">(</span>1.0d0/2.0d0<span style="color: #3a81c3;">)</span> * s **2 * omg1**2 + p * s * <span style="color: #3a81c3;">cos</span><span style="color: #3a81c3;">(</span>tt1<span style="color: #3a81c3;">)</span>
+         e2 = <span style="color: #3a81c3;">(</span>1.0d0/2.0d0<span style="color: #3a81c3;">)</span> * s **2 * omg2**2 + p * s * <span style="color: #3a81c3;">cos</span><span style="color: #3a81c3;">(</span>tt2<span style="color: #3a81c3;">)</span>
+
+         <span style="color: #3a81c3; font-weight: bold;">write</span><span style="color: #3a81c3;">(</span>10, *<span style="color: #3a81c3;">)</span> t, omg1, tmp_tt1, omg2, tmp_tt2
+         <span style="color: #3a81c3; font-weight: bold;">write</span><span style="color: #3a81c3;">(</span>11, *<span style="color: #3a81c3;">)</span> t, e1, e2
+
+      <span style="color: #3a81c3; font-weight: bold;">end</span> <span style="color: #3a81c3; font-weight: bold;">do</span>
+      <span style="color: #3a81c3; font-weight: bold;">close</span><span style="color: #3a81c3;">(</span>10<span style="color: #3a81c3;">)</span>
+      <span style="color: #3a81c3; font-weight: bold;">close</span><span style="color: #3a81c3;">(</span>11<span style="color: #3a81c3;">)</span>
+      <span style="color: #3a81c3; font-weight: bold;">end</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org9316613" class="outline-3">
+<h3 id="org9316613">Resultados</h3>
+<div class="outline-text-3" id="text-org9316613">
+<p>
+Apesar do sistema ser oscilatório e sem presença forças dissipativas, o método de Euler apresenta um
+comportamento contrário ao esperado. A amplitude das oscilações aumenta com o tempo. O método pode
+não apresentar esse comportamento se a escala de tempo utilizada for muito curta, mas para periodo
+maiores de tempo fica aparente.
+</p>
+
+<p>
+<a href="./tarefa-a/tarefa-a-grafico-oscilacoes.pdf">./tarefa-a/tarefa-a-grafico-oscilacoes.pdf</a>
+</p>
+
+<p>
+Para entender essa instabilidade do método podemos ánalisar o comportamento da energia mecânica do
+sistema. 
+\[ E = \Delta K + \Delta U \]
+\[ E = \frac{1}{2} m v^2  + mg \Delta h \]
+</p>
+
+<div class="latex" id="orgc8b5081">
+\begin{equation}
+ E = \frac{1}{2} m\omega^2 l^2  + mgl \cos \theta   
+\label{eq:energiaSistema}
+\end{equation}
+
+</div>
+
+<p>
+Note que essa equação cresce pra qualquer valor de \( \theta  \) conforme \( t \) aumenta,
+essa é a fonte da instabilidade do método de Euler. Ao contrário do método de
+Euler-Cromer, que consegue conservar energia sob periodos inteiros de oscilação, ele
+aumenta a energia do mais rapidamente e uma consequência disso é o aumento da amplitude
+da oscilação a cada iteração, como está claro no gráfico (<a href="#org0823119">1</a>).
+</p>
+
+<p>
+Pelo gráfico das energias calculadas pelos métodos podemos ver que o método de Euler-Cromer
+mantém uma energia constante, como esperado para um sistema conservativo e o método de Euler não.
+</p>
+
+
+<p>
+<a href="./tarefa-a/tarefa-a-grafico-energias.pdf">./tarefa-a/tarefa-a-grafico-energias.pdf</a>
+</p>
+
+<p>
+Por fim, o método de Euler não é um método bom para problemas desse tipo, onde queremos analisar
+o comportamento oscilatórios. Para problemas que envolvem oscilações os método de Euler-Cromer
+apresenta maior estabilidade.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfd4607d" class="outline-2">
+<h2 id="orgfd4607d"><span class="section-number-2">2.</span> Tarefa B</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgd545644" class="outline-3">
+<h3 id="orgd545644">B1</h3>
+<div class="outline-text-3" id="text-orgd545644">
+<p>
+Para as condições dadas temos a seguinte relação
+</p>
+<div class="latex" id="org570807b">
+\begin{equation}
+\frac{d}{dt} \omega = - \frac{g}{l} \sin \theta 
+\label{eq:penduloSimples}
+\end{equation}
+
+</div>
+<p>
+usaremos o método de Euler-Cromer para avaliar o período do movimento do pêndulo simples em função
+de um \( \theta _0 \), sabemos que o sistema (\ref{eq:penduloSimples}) é um pêndulo simples e então
+o esperado é que tenha um período equivalente a
+\[ T = 2 \pi \sqrt{ \frac{l}{g}} \]
+</p>
+
+<p>
+no programa implementado em fortran foi feita uma modificação em relação ao código (<a href="#orgd2ffb8b">2</a>),
+nesse algoritmo foi utilizada a noção de busca direta para realizar uma contagem de raízes da função
+cálculada, ou seja, foi contado o número de vezes que o gráfico do movimento corta o eixo horizontal
+e por fim feito uma média que nos dá o período de oscilação. No código abaixo temos a implementação
+desse método
+</p>
+
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 3: </span>Método de Euler-Cromer para o cálculo de período de oscilação do pêndulo simples.</label><pre class="src src-fortran"><span style="color: #2aa1ae; background-color: #ecf3ec;">c</span><span style="color: #2aa1ae; background-color: #ecf3ec;">ount = 0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">d</span><span style="color: #2aa1ae; background-color: #ecf3ec;">o i = 1, n</span>
+
+   t = t + dt
+
+   tmp_omg = omg - <span style="color: #3a81c3;">sin</span><span style="color: #3a81c3;">(</span>tt<span style="color: #3a81c3;">)</span> * dt
+   tmp_tt = tt + tmp_omg * dt
+
+   <span style="color: #3a81c3; font-weight: bold;">if</span><span style="color: #3a81c3;">(</span>tmp_tt * tt &lt; 0<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">then</span>
+      count = count + 1
+   <span style="color: #3a81c3; font-weight: bold;">end</span> <span style="color: #3a81c3; font-weight: bold;">if</span>
+
+   omg = tmp_omg
+   tt = tmp_tt
+<span style="color: #3a81c3; font-weight: bold;">end</span> <span style="color: #3a81c3; font-weight: bold;">do</span>
+
+T = <span style="color: #3a81c3;">(</span>2 * t<span style="color: #3a81c3;">)</span> / count
+</pre>
+</div>
+
+<p>
+O objetivo desse problema é cálcular o período de um pêndulo físico usando duas fórmulas, a primera
+é a (\ref{eq:penduloSimples}) , implementada no código acima, e a segunda usando a integral eliptíca (\ref{eq:integralEliptica}),
+para isso, é necessário fazer a discretização dessa função.
+</p>
+</div>
+
+<div id="outline-container-org9ba09c5" class="outline-4">
+<h4 id="org9ba09c5">Discretização da integral eliptíca</h4>
+<div class="outline-text-4" id="text-org9ba09c5">
+<p>
+\[ T(\theta_0) = \sqrt{ \frac{2l}{g}} \int_{- \theta _0}^{\theta _0} \frac{d \theta }{\sqrt{\cos \theta - \cos \theta _0  }}  \]
+</p>
+
+<p>
+Para evitar problemas que podem ocorrer quando o denominador ficar muito próximo de zero adicionamos
+uma constante \( \epsilon \) aos limites de integração, temos então
+</p>
+
+<div class="latex" id="org9bcfdb5">
+\begin{equation}
+T(\theta _0) = \sqrt{ \frac{2l}{g}} \int_{- \theta _0 + \epsilon} ^{\theta _0 + \epsilon} \frac{d
+\theta }{\sqrt{\cos \theta - \cos \theta _0 } }
+\label{eq:integralElipticaDiscretizada}
+\end{equation}
+
+</div>
+
+<p>
+podemos separar a integral em 3, e com isso encontramos podemos reduzir o cálculo dela à uma função
+analítica
+</p>
+
+<p>
+\[ T( \theta _0) = \underbrace{\sqrt{ \frac{2l}{g}} \int_{- \theta _0 + \epsilon} ^{ \theta _0 + \epsilon} \frac{d \theta
+}{\sqrt{\cos \theta - \cos \theta _0}}}_{\text{Numérica}} + \underbrace{ \sqrt{ \frac{2l}{g}}
+\int_{- \theta_0}^{- \theta _0 + \epsilon}\frac{d \theta }{\sqrt{\cos \theta - \cos \theta _0}} + \sqrt{ \frac{2l}{g}} \int_{\theta _0 - \epsilon}^{\theta _0} \frac{d
+\theta }{\sqrt{\cos \theta - \cos \theta _0  }}}_{\text{Analiticas}} \]
+Nesses limites de integração temos que
+</p>
+
+<p>
+\[ \sqrt{ \frac{2l}{g}} \int_{ - \theta _0 }^{-\theta _0 + \epsilon} \frac{d \theta }{\sqrt{\cos
+  \theta - \cos \theta _0}} =
+  \sqrt{ \frac{2l}{g}} \int_{\theta _0 - \epsilon}^{\theta _0} \frac{d
+\theta }{\sqrt{\cos \theta - \cos \theta _0  }} \]
+</p>
+
+<p>
+podemos então considerar apenas uma das duas integrais, fazendo
+</p>
+
+<p>
+\[ A = 2 \sqrt { \frac{2l}{g}} \int_{- \theta_0}^ { -\theta _0 + \epsilon } \frac{d \theta }{\sqrt{\cos \theta - \cos \theta _0} } \]
+</p>
+
+<p>
+Resolvendo a integral temos que, \( \theta \to \theta _0 \) , com \( \theta = - \theta _0 + \varphi
+\) e \( \varphi \to 0 \), então
+\[ \cos \theta - \cos \theta _0 = cos( - \theta _0 + \varphi) - \cos \theta = \cos \theta_0
+\cos\varphi + \sin \theta_0 \sin \varphi - \cos \theta_0      \]
+\[ \cos \theta - \cos \theta _0 = \varphi  \sin \theta _0   \]
+</p>
+
+<p>
+com essa relação podemos avaliar a integral no intervalo de integração \( [ 0, \epsilon] \), fazendo
+a mudança de variáveis temos
+</p>
+
+<p>
+\[  \int_{- \theta _0 }^{\theta _0 + \epsilon} \frac{ d \theta }{\sqrt{\cos \theta - \cos \theta _0}
+} = \int_{0}^{\epsilon} \frac{1}{\sqrt{\sin \varphi}} \frac{1}{\varphi} d\varphi\]
+</p>
+
+<p>
+\[ A = 2 \sqrt{\frac{2l}{g}} \sqrt{\frac{\epsilon}{\sin  \theta _0}} \]
+</p>
+
+<p>
+A função do período em \( \theta _0 \) é dada por 
+</p>
+<div class="latex" id="orgb8c0319">
+\begin{equation}
+T( \theta _0) = \sqrt{\frac{2l}{g}} \int_{- \theta _0}^{\theta _0 + \epsilon} \frac{d \theta}{\sqrt{\cos \theta - \cos \theta _0  }}
++ 2 \sqrt{\frac{2l}{g}} \sqrt{\frac{\epsilon}{\sin  \theta _0}} 
+\label{eq:formulaFinalPeriodo}
+\end{equation}
+
+</div>
+</div>
+</div>
+
+<div id="outline-container-org143d6c2" class="outline-4">
+<h4 id="org143d6c2">Método de Boole</h4>
+<div class="outline-text-4" id="text-org143d6c2">
+<p>
+Com o ferramental adquirido no projeto anterior podemos utilizar um método de integração (nesse
+caso o método de Boole foi o escolhido) para avaliar a integral eliptíca
+(\ref{eq:integralEliptica}), este é dado pela seguinte relação
+</p>
+
+<div class="latex" id="orge765ef1">
+\begin{equation}
+  \int_{a}^{b} f(x) dx = \frac{2h}{45}  \left( 7 f(x) + 32 f(x + h) + 12 f(x + 2h) + 32f(x + 3h) + f(x+4h) \right) ,
+  h =  \frac{b - a}{N}
+\label{eq:metodoBoole}
+\end{equation}
+
+</div>
+<p>
+onde \( N \) é o número de iterações utilizadas para o cálculo da integral.
+</p>
+
+
+<p>
+Ajustando a discretização da (\ref{eq:integralElipticaDiscretizada}) para usar o método de boole
+temos que \( h = \frac{b - a}{N} \), onde \( [a,b] \)  é o intervalo de integração \( [a,b] =
+  [\theta _0  + \epsilon, - \theta _0 + \epsilon] \), segue que
+\( h = \frac{2 \theta _0}{N} \). Sabemos pelo projeto anterior sobre <b>Cálculo Numérico</b> que o método
+de Boole pode apresentar melhor precisação para \( h \) na ordem de \( 10^{-5} \), portanto essa
+será a ordem usada nessa implementação. 
+</p>
+</div>
+</div>
+<div id="outline-container-org52a97b5" class="outline-4">
+<h4 id="org52a97b5">Código da implementação do método de Boole</h4>
+<div class="outline-text-4" id="text-org52a97b5">
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 4: </span>Calculo da integral usando método de Boole</label><pre class="src src-fortran" id="orga92641b"><span class="linenr">18: </span><span style="color: #2aa1ae; background-color: #ecf3ec;">!        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Metodo de Boole</span>
+<span class="linenr">19: </span>         h = <span style="color: #3a81c3;">(</span>2 * tt0<span style="color: #3a81c3;">)</span>/n
+<span class="linenr">20: </span>         <span style="color: #3a81c3; font-weight: bold;">do</span> i = 0, <span style="color: #3a81c3;">(</span>n/4<span style="color: #3a81c3;">)</span> - 1
+<span class="linenr">21: </span>
+<span class="linenr">22: </span>            tt = - tt0 + 2*i*h + e
+<span class="linenr">23: </span>
+<span class="linenr">24: </span>            f0 = f<span style="color: #3a81c3;">(</span>tt, tt0<span style="color: #3a81c3;">)</span> 
+<span class="linenr">25: </span>            f1 = f<span style="color: #3a81c3;">(</span>tt + h, tt0<span style="color: #3a81c3;">)</span>
+<span class="linenr">26: </span>            f2 = f<span style="color: #3a81c3;">(</span>tt + 2*h, tt0<span style="color: #3a81c3;">)</span>
+<span class="linenr">27: </span>            f3 = f<span style="color: #3a81c3;">(</span>tt + 3*h, tt0<span style="color: #3a81c3;">)</span> 
+<span class="linenr">28: </span>            f4 = f<span style="color: #3a81c3;">(</span>tt + 4*h, tt0<span style="color: #3a81c3;">)</span>
+<span class="linenr">29: </span>
+<span class="linenr">30: </span>            sum = sum + <span style="color: #3a81c3;">(</span>7*f0+32*f1+12*f2+32*f3+7*f4<span style="color: #3a81c3;">)</span>
+<span class="linenr">31: </span>         <span style="color: #3a81c3; font-weight: bold;">end</span> <span style="color: #3a81c3; font-weight: bold;">do</span>
+<span class="linenr">32: </span>
+<span class="linenr">33: </span>         sum = sum*<span style="color: #3a81c3;">(</span>2*h/45<span style="color: #3a81c3;">)</span>
+<span class="linenr">34: </span>         sum = <span style="color: #3a81c3;">sqrt</span><span style="color: #3a81c3;">(</span>2d0<span style="color: #3a81c3;">)</span> * sum + 2 * <span style="color: #3a81c3;">sqrt</span><span style="color: #3a81c3;">(</span>2d0<span style="color: #3a81c3;">)</span> * <span style="color: #3a81c3;">sqrt</span><span style="color: #3a81c3;">(</span>e/<span style="color: #3a81c3;">sin</span><span style="color: #6c3163;">(</span>tt0<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 5: </span>Função da integral.</label><pre class="src src-fortran"><span class="linenr">35: </span><span style="color: #3a81c3; font-weight: bold;">function</span> <span style="color: #6c3163; font-weight: bold;">f</span><span style="color: #3a81c3;">(</span>tt, tt0<span style="color: #3a81c3;">)</span>
+<span class="linenr">36: </span><span style="color: #ba2f59; font-weight: bold;">implicit real</span> * 8 <span style="color: #3a81c3;">(</span>a-h, o-z<span style="color: #3a81c3;">)</span>
+<span class="linenr">37: </span>pi = <span style="color: #3a81c3;">acos</span><span style="color: #3a81c3;">(</span>-1.d0<span style="color: #3a81c3;">)</span>
+<span class="linenr">38: </span>f = 1.0d0 / <span style="color: #3a81c3;">sqrt</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">cos</span><span style="color: #6c3163;">(</span>tt<span style="color: #6c3163;">)</span> - <span style="color: #3a81c3;">cos</span><span style="color: #6c3163;">(</span>tt0<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>  
+<span class="linenr">39: </span><span style="color: #3a81c3; font-weight: bold;">return</span>
+<span class="linenr">40: </span><span style="color: #3a81c3; font-weight: bold;">end</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org0316dd9" class="outline-3">
+<h3 id="org0316dd9">Resultados B1 e B2</h3>
+<div class="outline-text-3" id="text-org0316dd9">
+<p>
+Os métodos implementados fornecem as seguintes aproximações para alguns ângulos iniciais:
+</p>
+<div class="latex" id="org654bc88">
+\begin{table}[htb!]
+\centering
+\caption{Cálculo do período de oscilação para um ângulo \( \theta _0 \) inicial utilizando aproximações numéricas. }
+\begin{tabular}{|c|c|c|}
+\hline
+$\theta_0$  & \begin{tabular}[c]{@{}c@{}}Aproximação pelo método\\ Euler-Cromer\end{tabular} & Integral Eliptica  \\ \hline
+$ 7 \pi/18$ & 6.9444444444455478                                                             & 6.9470463343391113 \\ \hline
+$ \pi/3$    & 6.7567567567578299                                                             & 6.7566483723506163 \\ \hline
+$ \pi/2$    & 7.4074074074085843                                                             & 7.4566305768269627 \\ \hline
+$5\pi/6$    & 11.111111111112876                                                             & 11.217766346528297 \\ \hline
+\end{tabular}
+\end{table}
+
+</div>
+
+<p>
+Para valores iniciais de \( \theta _0 \leq  \pi / 6  \), nota-se que o ângulo inicial é irrelevante na
+determinação do período, foram feitas aproximações afim de demonstrar que para \( \theta _0 \)
+pequenos o período é dado por
+</p>
+<div class="latex" id="orgedcd48d">
+\begin{equation}
+ T \approx 2 \pi \sqrt{\frac{l}{g}}   \left( 1 + \frac{\theta _0^2}{16} \right)
+ \label{eq:aproxPeriodo}
+\end{equation}
+
+</div>
+
+<div class="latex" id="orgb22bcb2">
+\begin{table}[htb!]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+$\theta_0$ & \begin{tabular}[c]{@{}c@{}}Aproximação pelo método \\ de Euler-Cromer\end{tabular} & Integral Eliptíca  & Forma analítica    \\ \hline
+$\pi / 12$ & 6.3291139240516383                                                                 & 6.3149738926809489 & 6.3101004779090131 \\ \hline
+$\pi/24$   & 6.2893081761016276                                                                 & 6.2715816787230629 & 6.2899140998619432 \\ \hline
+$\pi/48$   & 6.2893081761016276                                                                 & 6.2508046777271904 & 6.2848675053501752 \\ \hline
+$\pi/96$   & 6.2893081761016276                                                                 & 6.2390644294801740 & 6.2836058567222342 \\ \hline
+\end{tabular}
+\end{table}
+
+</div>
+
+<p>
+Como esperado o comportamento do período para ângulos iniciais pequenos pode ser aproximado pela
+(\ref{eq:aproxPeriodo}) e nas simulações feitas obtive até a aproximação para um erro de até \(
+  10^{-2}\).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3460b5f" class="outline-3">
+<h3 id="org3460b5f"><b>B3</b></h3>
+<div class="outline-text-3" id="text-org3460b5f">
+<p>
+Sabemos que a fórmula geral da oscilação de um do pêndulo simples é dada por
+</p>
+
+<div class="latex" id="org24feeb1">
+\begin{equation}
+ \frac{d \omega}{dt} = - \frac{g}{l} \sin \theta  - \gamma \frac{d \theta }{dt}  + F_o \sin (\Omega t)
+ \label{eq:formulaGeralPendulo}
+\end{equation}
+
+</div>
+
+<p>
+até agora foram realizadas simulações considerando o sistema não dissipativo,
+nessa tarefa foi implementado o cálculo para o caso com  \( \gamma = 1/2 \) para analizar o
+comportamento do sistema com forças dissipativas atuando nele.
+</p>
+
+<p>
+O \( \gamma  \) é chamado fator de amortecimento e determina o quão abrupta será a diminuição do
+movimento, é esperado que um sistema desse tipo, com \( \gamma = \frac{1}{2} \) apresente amortecimento
+sub-critíco.
+</p>
+</div>
+<div id="outline-container-orgf2c32fb" class="outline-4">
+<h4 id="orgf2c32fb">Código em Fortran</h4>
+<div class="outline-text-4" id="text-orgf2c32fb">
+<p>
+O código para realizar essa simulação é apenas uma alteração do método de Euler-Cromer
+com adição dos novos valores utilizados.
+</p>
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 6: </span>Rotina que realiza o cálculo com \( \gamma = \frac{1}{2} \)</label><pre class="src src-fortran" id="orga352cb3">  tt = 7 * pi / 18 
+   <span style="color: #3a81c3; font-weight: bold;">do</span> i = 1, n
+
+   t = t + dt
+
+   tmp_omg = omg - <span style="color: #3a81c3;">sin</span><span style="color: #3a81c3;">(</span>tt<span style="color: #3a81c3;">)</span> * dt - gamma*omg*dt
+   tmp_tt = tt + tmp_omg * dt
+
+   omg = tmp_omg
+   tt = tmp_tt
+   <span style="color: #3a81c3; font-weight: bold;">write</span><span style="color: #3a81c3;">(</span>10, *<span style="color: #3a81c3;">)</span> t, tmp_tt
+<span style="color: #3a81c3; font-weight: bold;">end</span> <span style="color: #3a81c3; font-weight: bold;">do</span>
+</pre>
+</div>
+
+<p>
+A partir dos resultados desse programa foi gerado o gráfico (<a href="#org0683711">3</a>) , que constata o que
+esperavamos, que o comportamento das oscilações para o \( \gamma  \) escolhido é subcritíco. 
+</p>
+
+<p>
+<a href="./tarefa-b/b3/tarefa-b3-grafico-oscilacoes.pdf">./tarefa-b/b3/tarefa-b3-grafico-oscilacoes.pdf</a>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgaa248c3" class="outline-3">
+<h3 id="orgaa248c3"><b>B4</b></h3>
+<div class="outline-text-3" id="text-orgaa248c3">
+<p>
+Dando continuidade à tarefa anterior, nesse tópico foi o objetivo é fazer simulações
+para o sistema com dissipações e com oscilações forçadas por forças de intensidades diferentes.
+Para o sistema no caso onde \( \gamma  = \frac{1}{2} \), \( \Omega = \frac{3}{2} \) com \(
+\Delta t = 0.03 \) para \( F_0 = 0, F_0 = \frac{1}{2} \text{ e } F_0 = \frac{6}{5} \) foi usada a
+equação (\ref{eq:formulaGeralPendulo}) para criar os gráficos conjuntos de para o \( \theta  \) e \( \omega \) em função do tempo.
+</p>
+
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 7: </span>Código do cálculo dos \( \theta  \) , \( \omega \) e períodos de oscilação do pêndulo.</label><pre class="src src-fortran"> <span style="color: #3a81c3; font-weight: bold;">do</span> i = 1, n
+
+    t = t + dt
+
+    tmp_omg = omg - <span style="color: #3a81c3;">sin</span><span style="color: #3a81c3;">(</span>tt<span style="color: #3a81c3;">)</span>*dt-gamma*omg*dt
+    tmp_tt = tt + tmp_omg*dt 
+
+    tmp_omg1 = omg1 - <span style="color: #3a81c3;">sin</span><span style="color: #3a81c3;">(</span>tt1<span style="color: #3a81c3;">)</span>*dt-gamma*omg1*dt+f01*<span style="color: #3a81c3;">sin</span><span style="color: #3a81c3;">(</span>OM*t<span style="color: #3a81c3;">)</span>*dt
+    tmp_tt1 = tt1 + tmp_omg1*dt
+
+    tmp_omg2 = omg2 - <span style="color: #3a81c3;">sin</span><span style="color: #3a81c3;">(</span>tt2<span style="color: #3a81c3;">)</span>*dt-gamma*omg2*dt+f02*<span style="color: #3a81c3;">sin</span><span style="color: #3a81c3;">(</span>OM*t<span style="color: #3a81c3;">)</span>*dt
+    tmp_tt2 = tt2 + tmp_omg2*dt
+
+    <span style="color: #3a81c3; font-weight: bold;">write</span><span style="color: #3a81c3;">(</span>10,*<span style="color: #3a81c3;">)</span> t, <span style="color: #3a81c3;">mod</span><span style="color: #3a81c3;">(</span>tmp_tt+100*pi,-2*pi<span style="color: #3a81c3;">)</span>, 
++        <span style="color: #3a81c3;">mod</span><span style="color: #3a81c3;">(</span>tmp_tt1+100*pi,-2*pi<span style="color: #3a81c3;">)</span>, <span style="color: #3a81c3;">mod</span><span style="color: #3a81c3;">(</span>tmp_tt2+100*pi,-2*pi<span style="color: #3a81c3;">)</span>
+
+    <span style="color: #3a81c3; font-weight: bold;">write</span><span style="color: #3a81c3;">(</span>11, *<span style="color: #3a81c3;">)</span> t, tmp_omg, tmp_omg1, tmp_omg2
+
+    <span style="color: #3a81c3; font-weight: bold;">if</span><span style="color: #3a81c3;">(</span>tmp_tt * tt &lt; 0<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">then</span>
+       count = count + 1
+    <span style="color: #3a81c3; font-weight: bold;">end</span> <span style="color: #3a81c3; font-weight: bold;">if</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span><span style="color: #3a81c3;">(</span>tmp_tt2 * tt1 &lt; 0<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">then</span>
+       count1 = count1+ 1
+    <span style="color: #3a81c3; font-weight: bold;">end</span> <span style="color: #3a81c3; font-weight: bold;">if</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span><span style="color: #3a81c3;">(</span>tmp_tt2 * tt2 &lt; 0<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">then</span>
+       count2 = count2 + 1
+    <span style="color: #3a81c3; font-weight: bold;">end</span> <span style="color: #3a81c3; font-weight: bold;">if</span>
+
+    omg = tmp_omg
+    tt = tmp_tt
+
+    omg1 = tmp_omg1
+    tt1 = tmp_tt1
+
+    omg2 = tmp_omg2
+    tt2 = tmp_tt2
+
+ <span style="color: #3a81c3; font-weight: bold;">end</span> <span style="color: #3a81c3; font-weight: bold;">do</span>
+
+ T = <span style="color: #3a81c3;">(</span>2*t<span style="color: #3a81c3;">)</span>/count
+ T1 = <span style="color: #3a81c3;">(</span>2*t<span style="color: #3a81c3;">)</span>/count1
+ T2 = <span style="color: #3a81c3;">(</span>2*t<span style="color: #3a81c3;">)</span>/count2
+
+ <span style="color: #3a81c3; font-weight: bold;">write</span><span style="color: #3a81c3;">(</span>*, *<span style="color: #3a81c3;">)</span> T, T1, T2
+</pre>
+</div>
+
+<p>
+Os valores iniciais das variáveis presentes no código acima são semelhentes às do <a href="#orga352cb3">6</a>,
+além deles as variáveis <code>count</code>, <code>count1</code> e <code>count2</code> usadas para o cálculo do período são inicializadas
+em zero.
+</p>
+
+
+<p>
+<a href="./tarefa-b/b4/tarefa-b4-grafico.pdf">./tarefa-b/b4/tarefa-b4-grafico.pdf</a>
+</p>
+
+<p>
+A aproximação numérica para a frequência do caso onde \( F_0 = 0 \) nós dá \( f =
+  6.4516129032256053 \), esse é o caso
+do pêndulo com apenas forças dissipativas presentes (sistema analisado no <b>B3</b>), portanto, sabemos
+que a frequência tende a ser nula, já que o sistema é amortecido até não haver mais oscilação.
+</p>
+
+<p>
+Para o caso de \( F_0 = \frac{1}{2} \) as oscilações forçadas tem energia mantida a mesma durante
+toda evolução do sistema, por isso o comportamento do gráfico é o de um pêndulo simples, como
+estudado nas seções anteriores.
+</p>
+
+<p>
+Já para \( F_0 = \frac{6}{5} \) o sistema tem comportamento caótico. Uma forma de mostrar que o
+sistema pode ser caótico para um \( F_0 \) podemos analisar o comportamento do sistema para
+difentes valores iniciais de \( \theta  \), isto é, mostrar que o sistema é sensível a valores
+iniciais e que valores minimamente diferentes podem fazer com que o sistema evolua de formas
+muito diferentes. O gráfico (<a href="#orgd86cec3">4</a>) ilustra bem esse fenômeno.
+</p>
+
+
+<p>
+<a href="./tarefa-b/b4/tarefa-b4-grafico-thetas.pdf">./tarefa-b/b4/tarefa-b4-grafico-thetas.pdf</a>
+</p>
+
+
+
+
+<p>
+Por causa desse comportamento do gráfico não é possível cálcular a frequência já que o sistema não
+é periódioco durante toda sua evolução temporal.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8e322c3" class="outline-2">
+<h2 id="org8e322c3"><span class="section-number-2">3.</span> Tarefa C</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Afim de analisar mais profundamente o emergência de caos podemos modelar o sistema com dois
+pêndulos, com \( \theta _0  \) iniciais próximos tal que \( \Delta \theta = 10^{-3} \), com o
+expoente de Liapunov conseguimos calcular a taxa de separação entre as trajetórias tomadas
+pelos dois pêndulos, dizemos que, para uma trajetória cujos \( \theta  \) se separam
+exponencialmente, o sistema é caótico. Abaixo está a expressão para o expoente de Liapunov
+</p>
+
+<div class="latex" id="org599792b">
+  \begin{equation}
+  \Delta \theta (t) \approx e^{\lambda t} = 
+  \begin{cases}
+   \lambda  < 0 \Rightarrow \text{ sistema não caótico },\\
+   \lambda > 0 \Rightarrow \text{sistema caótico}   
+\end{cases}
+  \label{eq:liapunov}  
+  \end{equation}
+
+</div>
+
+<p>
+como queremos estimaro  valor de \( \lambda  \), tomamos o logaritmo neperiano da relação e com
+isso obtemos uma relação linear, onde \( \lambda  \) é o coeficiente angular da reta
+</p>
+
+<div class="latex" id="orgaaa129d">
+\begin{equation}
+ \ln(|\Delta \theta (t)|) = \lambda t  
+\label{eq:liapunovFinal}
+\end{equation}
+
+</div>
+
+<p>
+As únicas alterações necessárias para realização dessa simulação em relação às anteriores são os
+valores de saída e a realização da subtração do ângulo dos dois pêndulos, as modificações estão
+no código abaixo:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 8: </span>Código para execução da simulação .</label><pre class="src src-fortran">f = 0.5d0 <span style="color: #2aa1ae; background-color: #ecf3ec;">! </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1.2d0 </span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">d</span><span style="color: #2aa1ae; background-color: #ecf3ec;">o i = 1, n</span>
+
+   t = t + dt
+
+   tmp_omg1 = omg1 - <span style="color: #3a81c3;">sin</span><span style="color: #3a81c3;">(</span>tt1<span style="color: #3a81c3;">)</span>*dt-gamma*omg1*dt+f*<span style="color: #3a81c3;">sin</span><span style="color: #3a81c3;">(</span>OM*t<span style="color: #3a81c3;">)</span>*dt
+   tmp_tt1 = tt1 + tmp_omg1*dt
+
+   tmp_omg2 = omg2 - <span style="color: #3a81c3;">sin</span><span style="color: #3a81c3;">(</span>tt2<span style="color: #3a81c3;">)</span>*dt-gamma*omg2*dt+f*<span style="color: #3a81c3;">sin</span><span style="color: #3a81c3;">(</span>OM*t<span style="color: #3a81c3;">)</span>*dt
+   tmp_tt2 = tt2 + tmp_omg2*dt
+
+   <span style="color: #3a81c3; font-weight: bold;">write</span><span style="color: #3a81c3;">(</span>10, *<span style="color: #3a81c3;">)</span> t, <span style="color: #3a81c3;">log</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">abs</span><span style="color: #6c3163;">(</span>tt2 - tt1<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+   omg1 = tmp_omg1
+   tt1 = tmp_tt1
+
+   omg2 = tmp_omg2
+   tt2 = tmp_tt2
+
+<span style="color: #3a81c3; font-weight: bold;">end</span> <span style="color: #3a81c3; font-weight: bold;">do</span>
+</pre>
+</div>
+
+<p>
+O experimento é realizado para um valor incial arbritário igual \( \theta = 7 \pi / 18 \), onde \(  \Delta \theta = 0.001 \) 
+e partir dos valores coletados foi possível construir os gráficos abaixo, que foram usados nas
+analises à cerca do <b>coeficiente de Liapunov</b> e o comportamento deterministico ou não do sistema.
+</p>
+
+<p>
+Fazendo o ajuste linear utilizando foi obtido os valores aproximados para \( \lambda  \),
+para o caso onde \( F_0 = 1/2 \) temos \( \lambda =  -0.254 \pm 0.001  \)
+e para \( F_0 = 6/5 \), \( \lambda = 0.131 \pm 0.001 \). O valor de \( \lambda  \) foi estimado
+usando o graficador <code>GNUPLOT</code>. 
+</p>
+
+<p>
+A partir desses valores cálculados para \( \lambda \) para ambas forças iniciais, podemos dizer
+que, para o caso onde \( F_0 = 6/5 \) o sistema possui comportamento caótico, pois seu \( \lambda
+  > 0 \).
+Com isso temos uma comprovação para o resultado obtido anteriormente, quando foi tentei
+calcular o periódo de oscilação do sistema com essa mesma \( F_0 \).
+</p>
+
+<p>
+<a href="./tarefa-c/tarefa-c-grafico.pdf">./tarefa-c/tarefa-c-grafico.pdf</a>
+</p>
+
+<p>
+Além disso, fica claro pelo gráfico (<a href="#orgefb3d36">5</a>) que o crescimento da constante de Liapunov é
+exponencial, ou seja, para o caso do sistema caótico as trajetórias se afastam também
+exponencialmente, então o comportamento do sistema não pode ser previsto.
+</p>
+</div>
+</div>
+<div id="outline-container-org5a2c910" class="outline-2">
+<h2 id="org5a2c910"><span class="section-number-2">4.</span> Tarefa D</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Continuando com o sistema 
+</p>
+<p>
+<a href="./tarefa-d/tarefa-d-grafico.pdf">./tarefa-d/tarefa-d-grafico.pdf</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org054ba1a" class="outline-2">
+<h2 id="org054ba1a"><span class="section-number-2">5.</span> Tarefa E</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+</div>
+<div id="outline-container-org3ce5bea" class="outline-2">
+<h2 id="org3ce5bea"><span class="section-number-2">6.</span> Demonstração da integral eliptíca</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Sabemos que a energia do sistema do pêndulo é dada pela fórmula
+\(  E = \frac{1}{2} m l^2 \dot{\theta}^2 - mgl \cos \theta  \) e a energia inicial do sistema é \( E = - mg l
+\cos \theta _0  \), fazendo
+\[ -mgl \cos \theta_0 = \frac{1}{2} m l^2 \dot{\theta}^2 - mgl \cos \theta     \]
+multiplicando a equação por \( (1/m) \) temos
+\[ -gl \cos \theta _0 = \frac{1}{2} l^2 \dot{\theta}^2 - gl \cos \theta     \]
+como queremos chegar numa relação que nos permite escrever o período em função
+do angulo \( \theta _0 \), então vamos isolar a derivada da equação, então
+</p>
+
+<p>
+\[ gl (\cos \theta - \cos \theta _0) = \frac{1}{2} l^2 \dot{\theta}^2   \]
+\[ \frac{2g}{l} \left( \cos \theta -\cos \theta _0    \right)  = \dot{\theta }^2\]
+</p>
+
+<p>
+\[ \dot{\theta } = \sqrt{\frac{2g}{l}} \sqrt{\cos \theta - \cos \theta _0}  = \frac{d \theta }{dt} \]
+</p>
+
+<p>
+\[ dt = \frac{d \theta }{  \sqrt{\frac{2g}{l}} \sqrt{\cos \theta - \cos \theta _0  }} = \sqrt{\frac{l}{2g}}
+\frac{1}{\sqrt{\cos \theta - \cos \theta _0}} d \theta  \]
+</p>
+
+<p>
+integrando ambos lados no intervalo \( [ 0, T/2] \), ou seja \( [- \theta _0, \theta _0] \) , temos
+</p>
+
+
+<p>
+\[ \int_{0}^{T/2} dt = \sqrt{ \frac{l}{2g} } \int_{- \theta _0}^{\theta _0} \frac{1}{ \sqrt{\cos \theta - \cos \theta
+_0}} d \theta    \]
+</p>
+
+<p>
+\[ \frac{T}{2} = \sqrt{\frac{l}{2g}} \int_{- \theta _0}^{\theta _0} \frac{1}{ \sqrt{\cos \theta - \cos \theta
+_0}} d \theta   \]
+</p>
+
+<p>
+\[ T = 2 \sqrt{\frac{l}{2g}} \int_{- \theta _0}^{\theta _0} \frac{1}{ \sqrt{\cos \theta - \cos \theta
+_0}} d \theta = \sqrt{\frac{4l}{2g}} \int_{- \theta _0}^{\theta _0} \frac{1}{ \sqrt{\cos \theta - \cos \theta
+_0}} d \theta  \]
+</p>
+
+<div class="latex" id="org7d9d540">
+\begin{equation}
+\boxed{ T(\theta _0) = \sqrt{\frac{2l}{g}} \int_{- \theta _0}^{\theta _0} \frac{1}{ \sqrt{\cos \theta - \cos \theta _0}} d \theta  }
+\label{eq:integralEliptica}
+\end{equation}
+
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 12 de novembro de 2022</p>
+<p class="author">Author: <b>\Lage{Jefter Santiago Mares}</b>  n\(^{\circ}\) USP:12559016</p>
+<p class="date">Created: 2022-12-02 Fri 11:48</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
