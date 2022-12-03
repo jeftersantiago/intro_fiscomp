@@ -632,6 +632,76 @@ $\pi/96$   & 6.2893081761016276                                                 
   [[./tarefa-d/tarefa-d-grafico.pdf]]
   #+latex: \clearpage 
 * Tarefa E
+  #+name: diagramaFase
+  #+caption: Rotina para gerar o gráfico [[graficoE1]], com \( N = 50000 \) iterações e \( t_{\text{total}} = 1000 \) (s).
+  #+begin_src fortran :exports code
+      dt =  t_total / n 
+
+      t = 0d0
+      tt1 = 0.2d0
+      omg1 = 0.0d0
+
+      open(unit=11, file="saida-omega-theta1.dat")
+
+      do i = 1, n
+         t = t + dt
+
+         tmp_omg1 = omg1 - sin(tt1)*dt-gamma*omg1*dt+f02*sin(OM*t)*dt
+         tmp_tt1 = tt1 + tmp_omg1*dt
+
+         do while(tmp_tt1 > pi)
+            tmp_tt1 = tmp_tt1 - 2 * pi
+         end do
+         do while(tmp_tt1 < -pi)
+            tmp_tt1 = tmp_tt1 + 2 * pi
+         end do
+         write(11, *) tmp_tt1,  tmp_omg1
+
+         omg1 = tmp_omg1
+         tt1  = tmp_tt1
+      end do
+      close(11)
+  #+end_src
+
+  Inicialmente foi feito o gráfico do de \( \omega ( \theta )  \) para todo o intervalo, com isso
+  obtemos a imagem [[graficoE1]]. 
+  #+name: graficoE1 
+  #+caption: Gráfico de \( \omega \times \theta \) com \( F_0 = 6/5 \) no intervalo de \(  - \pi \leq  \theta \leq \pi \) .
+  #+attr_latex: :width 10cm :height 10cm :placement [!h]
+  [[./tarefa-e/tarefa-e-grafico1.pdf]]
+
+  #+latex: \clearpage
+  
+  Observando o mesmo gráfico, construido numa seção de Poincaré, ou
+  seja, plotando somente em pontos onde os \( \omega  \) e \( \theta  \) estão em fase com a força,
+  podemos analisar o comportamento desse sistema dinâmico. A seção de Poincaré é determinada
+  pela expressão abaixo
+
+  #+begin_latex
+  \begin{equation}
+  \bigg| t - \frac{n \pi}{\Omega} \bigg| < \frac{\Delta t}{2} 
+  \label{eq:poincare}
+  \end{equation}
+  #+end_latex
+
+  Adicionando a condição (\ref{eq:poincare}) na estrutura do código do diagrama de fase
+  (\ref{diagramaFase}) podemos examinar as trajetória nos tempos em que \( \theta \) e \( \omega \)
+  estão em fase com a força \( F_0 \). 
+
+  #+caption: Condição para seção de Poincaré adicionada na estrutura de repetição da rotina (\ref{diagramaFase}).
+  #+caption: Os \( \theta \) e \( \omega \) são foram escritos no arquivo =./saida-secao-poincare.dat=. 
+  #+begin_src fortran :exports code
+         if (mod(OM*t, 2*pi) < dt/2) then
+            write(10, *) tmp_tt1, tmp_omg1
+         end if 
+  #+end_src
+
+  #+name: graficoE2 
+  #+caption: Gráfico de \( \omega \times \theta \) com \( F_0 = 6/5 \) no intervalo de \(  - \pi \leq  \theta \leq \pi \) .
+  #+attr_latex: :width 10cm :height 10cm :placement [!h]
+  [[./tarefa-e/tarefa-e-grafico2.pdf]]
+
+
 #+latex: \clearpage
 #+latex: \appendix
 #+latex:\pagenumbering{roman}
