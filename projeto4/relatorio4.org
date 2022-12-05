@@ -56,9 +56,6 @@ o método de Euler-Cromer é uma variação do anterior, é representado pelas e
 \label{eq:thetaEulerCromer}
 \end{equation}
 #+end_latex
-#+latex: \clearpage
-** Código em Fortran
-
 #+caption: Declaração das variáveis utilizadas. 
 #+begin_src fortran :exports code
       implicit real * 8 (a-h, o-z)
@@ -618,20 +615,61 @@ $\pi/96$   & 6.2893081761016276                                                 
   #+caption: Gráficos \( \Delta (\theta ) \times t \) em escala semi-logaritmíca, com \( F_0 = 1/2 \) e \( F_0 = 6/5 \), respectivamente. 
   #+attr_latex: :width 12cm :height 13cm :placement [!t]
   [[./tarefa-c/tarefa-c-grafico.pdf]]
- 
+  
   Além disso, fica claro pelo gráfico ([[graficosC]]) que o crescimento da constante de Liapunov é
   exponencial, ou seja, para o caso do sistema caótico as trajetórias se afastam também
   exponencialmente, então o comportamento do sistema não pode ser previsto.
   #+latex: \clearpage
 * Tarefa D
-  Continuando com o sistema 
+  Dando continuidade ao estudo de simulações para o sistema do pêndulo simples, foi foram
+  construidos os gráficos do sistema de \( \omega \times \theta  \) para as duas forças já
+  utilizadas. Nessa etapa também utilizamos valores iniciais de \( \theta  \) pequenos e próximos,
+  variando entre eles na ordem de \( 10^{-3} \), com isso podemos mostrar que a oscilação forçada
+  com \( F_0 = 6/5 \) é caótica.
+  #+caption: Rotina que cálcula os valores de \( \theta  \), \( \omega \) e armazena os resultados.
+  #+begin_src fortran :exports code
+      do i = 1, n
+         
+         t = t + dt
+         
+         tmp_omg = omg - sin(tt)*dt-gamma*omg*dt+f01*sin(OM*t)*dt
+         tmp_tt = tt + tmp_omg*dt
+
+         tmp_omg1 = omg1 - sin(tt1)*dt-gamma*omg1*dt+f02*sin(OM*t)*dt
+         tmp_tt1 = tt1 + tmp_omg1*dt
+
+         write(10, *) tmp_tt, tmp_omg
+         write(11, *) tmp_tt1, tmp_omg1
+         
+         omg = tmp_omg
+         tt = tmp_tt
+
+         omg1 = tmp_omg1
+         tt1 = tmp_tt1
+
+      end do
+  #+end_src
+
+  Os resultados obtidos estão presentes na figura [[graficoD]]. Note que assim como esperado o
+  comportamento do sistema para diferentes valores iniciais, que embora sejam pequenos, pode
+  ser consideravelmente diferente, assim como também foi mostrado na ánalise do expoente de
+  Liapunov, no item anterior. Esse resultado reafirma o fato do sistema ser caótico.
+  
+  #+name: graficoD
   #+caption: Gráficos de \( \omega(\theta) \times \theta \) para \( F_0 = 1/2 \)  e \( F_0 = 6/5 \).
   #+caption: À esquerda gráficos para \( F_0 = 1/2 \) com \( \theta _0 = \pi/6, \pi/6 + 0.03, \pi/6 - 0.03 \), respectivamente.
   #+caption: Á direita gráficos com \( F_0 = 6/5 \) com \( \theta _0 = \pi/6, \pi/6 + 0.03, \pi/6 - 0.03 \), respectivamente.
-  #+attr_latex: :width 15cm :height 19cm :placement [!h]
+  #+attr_latex: :width 15cm :height 15cm :placement [!h]
   [[./tarefa-d/tarefa-d-grafico.pdf]]
   #+latex: \clearpage 
+
 * Tarefa E
+  Buscando encontrar uma maneira melhor de visualizar o comportamento do movimento caótico
+  nesse tópico foi implementado o código que define uma seção (ou mapa) de Poincaré. Foi
+  feito o gráfico de fase do movimento para cada força \( F_{01} = 1/2 \) e \( F_{01} = 6/5 \), e
+  consideramos apenas os pontos onde \( \Omega t = n \pi  \) ou \( \Omega t = 2n \pi \). O código
+  abaixo implementa a simulação do sistema limitada pelo intervalo \( [-\pi, \pi] \).
+
   #+name: diagramaFase
   #+caption: Rotina para gerar o gráfico [[graficoE1]], com \( N = 50000 \) iterações e \( t_{\text{total}} = 1000 \) (s).
   #+begin_src fortran :exports code
@@ -662,15 +700,14 @@ $\pi/96$   & 6.2893081761016276                                                 
       end do
       close(11)
   #+end_src
-
+  
+  #+latex:\clearpage
   Inicialmente foi feito o gráfico do de \( \omega ( \theta )  \) para todo o intervalo, com isso
   obtemos a imagem [[graficoE1]]. 
   #+name: graficoE1 
   #+caption: Gráfico de \( \omega \times \theta \) com \( F_0 = 6/5 \) no intervalo de \(  - \pi \leq  \theta \leq \pi \) .
   #+attr_latex: :width 10cm :height 10cm :placement [!h]
   [[./tarefa-e/tarefa-e-grafico1.pdf]]
-
-  #+latex: \clearpage
   
   Observando o mesmo gráfico, construido numa seção de Poincaré, ou
   seja, plotando somente em pontos onde os \( \omega  \) e \( \theta  \) estão em fase com a força,
@@ -688,18 +725,35 @@ $\pi/96$   & 6.2893081761016276                                                 
   (\ref{diagramaFase}) podemos examinar as trajetória nos tempos em que \( \theta \) e \( \omega \)
   estão em fase com a força \( F_0 \). 
 
-  #+caption: Condição para seção de Poincaré adicionada na estrutura de repetição da rotina (\ref{diagramaFase}).
-  #+caption: Os \( \theta \) e \( \omega \) são foram escritos no arquivo =./saida-secao-poincare.dat=. 
+
   #+begin_src fortran :exports code
          if (mod(OM*t, 2*pi) < dt/2) then
             write(10, *) tmp_tt1, tmp_omg1
          end if 
   #+end_src
 
-  #+name: graficoE2 
-  #+caption: Gráfico de \( \omega \times \theta \) com \( F_0 = 6/5 \) no intervalo de \(  - \pi \leq  \theta \leq \pi \) .
+  Com essa condição adicionada ao código podemos construir o gráfico dos pontos na seção de
+  Poincaré. Foram construidos gráficos do sistema com as duas forças e variando ligeiramente os
+  valores de entrada, nos resultados podemos observar que os pontos quando a força é tal que o
+  gráfico é caótico são "constantes" e no caso deterministico, com \( F_0 = 1/2 \) o gráfico é
+  apenas um ponto.
+  
+
+  Variando as condições iniciais para o \( \theta \) fazendo-o semelhante aos usados na
+  construção do [[graficoD]] obtemos os seguintes gráficos, para o sistema com \( F_0 = 1/2 \) e \( F_0 = 6/5 \).
+
+
+  #+name: graficoE3 
+  #+caption: Gráfico de \( \omega \times \theta \) com \( F_0 = 6/5 \) e \( F_0 = 1/2\) com \( \theta = 0.2, \theta = 0.2 + 0.03\) e \(\theta = 0.2 - 0.03 \) iniciais.
+  #+attr_latex: :width 18cm :height 8cm :placement [!h]
+  [[./tarefa-e/tarefa-e-grafico.pdf]]
+
+
+  #+name: graficoE3 
+  #+caption: Gráfico a fase igual a \( 2\pi \).
   #+attr_latex: :width 10cm :height 10cm :placement [!h]
   [[./tarefa-e/tarefa-e-grafico2.pdf]]
+
 
 
 #+latex: \clearpage
@@ -744,19 +798,3 @@ _0}} d \theta  \]
 \label{eq:integralEliptica}
 \end{equation}
 #+end_latex
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
