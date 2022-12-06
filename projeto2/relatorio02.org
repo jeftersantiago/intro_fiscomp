@@ -258,7 +258,7 @@
   \frac{1}{4}, \frac{1}{5}  \) e \( M = 10000 \) andarilhos.
   
   #+caption: Simulações para \( p = \frac{1}{3}, \frac{1}{4}, \frac{1}{5} \), com \( N = 1000 \) .
-  #+attr_latex: :width 20cm :height 8cm :placement [h!]
+  #+attr_latex: :width 18cm :height 7cm :placement [h!]
   [[./tarefaB/tarefa-b2-grafico-2.pdf]]
 
 #+latex: \clearpage  
@@ -341,7 +341,7 @@
   |-------+---------------------------+------------|
 
   #+caption: Gráficos de difusão de \( M = 1000 \) andarilhos em duas dimensões $(X,Y)$.
-  #+attr_latex: :width 20cm :height 20cm :placement [h!]
+  #+attr_latex: :width 18cm :height 20cm :placement [h!]
   [[./tarefaC/tarefa-c-grafico.pdf]]
 
   Nota-se que, para valores cada vez maiores de \( N \) o vetor médio \( \left \langle r \right \rangle  \)

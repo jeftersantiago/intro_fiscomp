@@ -1,0 +1,25 @@
+#+title: *\Huge{Projeto 05}*
+#+subtitle: \huge{Leis de Kleper e o Problema dos três corpos}
+#+author: *\Lage{Jefter Santiago Mares}* @@latex:\\@@ n$^{\circ}$ USP:12559016
+#+options: num:1 toc:1  date:t
+#+language: pt
+#+date: 24 de dezembro de 2022 
+
+#+latex_header: \documentclass[a4paper]{report}
+
+#+begin_latex 
+\begin{figure}[t!]
+    \includegraphics[height=0.2\textwidth]{~/Workspace/intro_fiscomp/.template/ifsc-logo.jpg}
+\end{figure}
+#+end_latex
+
+#+latex: \thispagestyle{empty}
+#+latex: \vspace*{\fill}
+#+latex: \begin{center}
+São Carlos
+
+2021
+#+latex: \end{center}
+#+latex:\newpage
+
+#+setupfile: ../.template/template.org

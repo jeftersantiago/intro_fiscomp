@@ -3,7 +3,7 @@
 #+author: *\Lage{Jefter Santiago Mares}* @@latex:\\@@ n$^{\circ}$ USP:12559016
 #+options: num:1 toc:1  date:t
 #+language: pt
-#+date: 12 de novembro de 2022 
+#+date: 03 de dezembro de 2022 
 
 #+latex_header: \documentclass[a4paper]{report}
 

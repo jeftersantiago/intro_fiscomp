@@ -1,0 +1,4 @@
+#+include: ./header.org
+#+startup: latexpreview
+
+
