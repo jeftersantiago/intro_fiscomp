@@ -1,8 +1,8 @@
-MAIN = teste.f
-BINARY = teste.exe
-UTIL = teste.gp
-TEX_FILE = teste.tex
-PDF_FILE = teste.pdf
+MAIN = tarefa-a1.f
+BINARY = tarefa-a1.exe
+UTIL = grafico-tarefa-a1.gp
+TEX_FILE = grafico-tarefa-a1.tex
+PDF_FILE = grafico-tarefa-a1.pdf
 
 all:
 	gfortran $(MAIN) -o $(BINARY)
@@ -12,8 +12,9 @@ run:
 plot:
 	gnuplot ./$(UTIL)
 	pdflatex ./$(TEX_FILE)
-	evince ./$(PDF_FILE) & 
 	@rm *-inc*eps* *.log *.tex *.aux
 
+show:
+	xreader ./$(PDF_FILE) & 
 clean:
 	@rm *.exe *.dat
