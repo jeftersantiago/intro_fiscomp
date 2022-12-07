@@ -1,4 +1,13 @@
 #+include: ./header.org
 #+startup: latexpreview
 
-
+* Tarefa A - Orbitas
+** Tarefa A.1
+  #+attr_latex: :width 10cm :height 8cm :placement [!ht]
+  [[./tarefa-a/a1/grafico-tarefa-a1.pdf]]
+** Tarefa A.2
+* Tarefa B - Problema de três corpos ou mais corpos
+** Tarefa B.1
+** Tarefa B.2
+** Tarefa B.3
+* Desafio (B.4)

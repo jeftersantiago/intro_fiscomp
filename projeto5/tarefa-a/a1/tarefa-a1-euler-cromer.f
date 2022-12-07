@@ -16,10 +16,23 @@
       
       open(10, file="saida-tarefa-a1.dat")
       do i = 1, n
-        
+!         print *, "srt(x²+y²) = ", sqrt(x**2 + y**2)
+
          ratio = (4*pi**2)/r**3
-         tmp_x = x
-         tmp_y = y
+
+         tmp_vx = vx - ratio*x*dt
+         tmp_vy = vy - ratio*y*dt
+
+         vx = tmp_vx
+         vy = tmp_vy
+
+!     Euler-Cromer
+         tmp_x = x + vx * dt
+         tmp_y = y + vy * dt
+
+         write(10, *) tmp_x, tmp_y
+         x = tmp_x
+         y = tmp_y
 
       end do
       close(10)
